@@ -7,7 +7,7 @@
 <ul>
 <li>函数及其周围状态的应用捆绑在一起构成闭包,闭包可以让内部函数访问外部函数作用域</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">// 最基础的闭包</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">// 最基础的闭包</span>
 <span class="line"></span>
 <span class="line">function consoleName (){</span>
 <span class="line">    let name = "王二小";</span>
@@ -96,7 +96,7 @@
 <li>使用 var 声明变量,不管变量写在哪里,都会被提前到作用域的顶端,全局变量会被提升到全局作用域的顶端,函数内部的变量会被提升到函数作用域的顶端;</li>
 <li>使用变量形式声明函数时，和普通的变量一样会存在提升的现象，而函数声明式会提升到作用域最前边，并且将声明内容一起提升到最上边。</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">fn()</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">fn()</span>
 <span class="line">var fn = function () {</span>
 <span class="line"> console.log(1)</span>
 <span class="line">}</span>
@@ -124,7 +124,7 @@
 <h4 id="request-相当于一个资源请求。" tabindex="-1"><a class="header-anchor" href="#request-相当于一个资源请求。"><span><code v-pre>Request</code> 相当于一个资源请求。</span></a></h4>
 <h4 id="response-相当于请求的响应" tabindex="-1"><a class="header-anchor" href="#response-相当于请求的响应"><span><code v-pre>Response</code> 相当于请求的响应</span></a></h4>
 <h4 id="语法" tabindex="-1"><a class="header-anchor" href="#语法"><span>语法</span></a></h4>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">fetch(input, init)</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">fetch(input, init)</span>
 <span class="line">// input: 一个字符串或一个Request对象</span>
 <span class="line">// init: 一个对象,包含的配置项有 method / headers / body / mode / credentials 等</span>
 <span class="line"></span>
@@ -135,7 +135,7 @@
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><h4 id="特点-基于-promise-不需要依赖第三方库-就可以优雅地使用-ajax" tabindex="-1"><a class="header-anchor" href="#特点-基于-promise-不需要依赖第三方库-就可以优雅地使用-ajax"><span>特点: 基于 Promise,不需要依赖第三方库，就可以优雅地使用 AJAX</span></a></h4>
 <h3 id="立即执行函数" tabindex="-1"><a class="header-anchor" href="#立即执行函数"><span>立即执行函数</span></a></h3>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">(function(){alert(‘21’)})()</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">(function(){alert(‘21’)})()</span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div></div></div><h4 id="作用" tabindex="-1"><a class="header-anchor" href="#作用"><span>作用:</span></a></h4>
 <ul>
@@ -153,7 +153,7 @@
 <li>线性有序存储，容量小，系统分配效率高。</li>
 <li>当前执行环境结束就会被销毁被垃圾回收制回收。</li>
 </ol>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">let a = 20;</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">let a = 20;</span>
 <span class="line">let b = a;</span>
 <span class="line">b = 30;</span>
 <span class="line">console.log(a); // 20</span>
@@ -166,7 +166,7 @@
 <li>引用数据类型在栈中存储了指针，该指针指向堆中该实体的起始地址。当解释器寻找引用值时，会首先检索其在栈中的地址，取得地址后从堆中获得实体，因此效率较低。</li>
 <li>只有当指向堆内存的所有指针都被销毁后才能被回收机制回收。</li>
 </ol>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">let m = { a: 10, b: 20 };</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">let m = { a: 10, b: 20 };</span>
 <span class="line">let n = m;</span>
 <span class="line">n.a = 16;</span>
 <span class="line">console.log(m.a) // 16</span>
@@ -176,7 +176,7 @@
 <li>浅拷贝: 浅拷贝是会将对象的每个属性进行依次复制，但是当对象的属性值是引用类型时，实质复制的是其引用，当引用指向的值改变时也会跟着变化。</li>
 <li>深拷贝: 深拷贝复制变量值，对于非基本类型的变量，则递归至基本类型变量后，再复制。 深拷贝后的对象与原来的对象是完全隔离的，互不影响，对一个对象的修改并不会影响另一个对象。</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">// 数组深拷贝,使用多层嵌套循环复制值</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">// 数组深拷贝,使用多层嵌套循环复制值</span>
 <span class="line">function typeIs(obj){</span>
 <span class="line">  let typeString = typeof obj;</span>
 <span class="line">  if(typeof obj !== 'object'){</span>
@@ -236,7 +236,7 @@
 <ul>
 <li>html 代码</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">&lt;!DOCTYPE html></span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">&lt;!DOCTYPE html></span>
 <span class="line">&lt;html lang="en-US"></span>
 <span class="line"></span>
 <span class="line">&lt;head></span>
@@ -260,7 +260,7 @@
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><ul>
 <li>index.js 代码</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">var instance = new Vue({</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">var instance = new Vue({</span>
 <span class="line">  el: "app",</span>
 <span class="line">  data: {</span>
 <span class="line">    text: "123"</span>
@@ -270,7 +270,7 @@
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><ul>
 <li>vue 代码</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">function Dep(){</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">function Dep(){</span>
 <span class="line">  this.subs = []</span>
 <span class="line">}</span>
 <span class="line">Dep.prototype = {</span>
@@ -407,7 +407,7 @@
 <li>你可以先设置 12px，然后使用 transform: scale(0.833333) 将元素缩小，效果跟 10px 很接近。不过要注意的是，transform: scale 出了缩小 font-size，也会缩小其他一些属性，需要多测试。</li>
 </ol>
 <h3 id="水平垂直同时居中的方式" tabindex="-1"><a class="header-anchor" href="#水平垂直同时居中的方式"><span>水平垂直同时居中的方式</span></a></h3>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">// 方式一: 绝对定位</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">// 方式一: 绝对定位</span>
 <span class="line">&lt;div class="father"></span>
 <span class="line">  &lt;div class="son"></span>
 <span class="line">    123123</span>
@@ -480,7 +480,7 @@
 <ul>
 <li>vue 中的懒加载是通过 webpack 的代码分割来实现的;</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">// 将</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">// 将</span>
 <span class="line">// import UserDetails from './views/UserDetails.vue'</span>
 <span class="line">// 替换成</span>
 <span class="line">const UserDetails = () => import('./views/UserDetails.vue')</span>

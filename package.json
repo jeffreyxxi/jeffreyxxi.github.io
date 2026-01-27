@@ -11,8 +11,15 @@
   "author": "jeffrey",
   "license": "MIT",
   "devDependencies": {
-    "@vuepress/bundler-vite": "^2.0.0-rc.14",
-    "@vuepress/theme-default": "^2.0.0-rc.38",
-    "vuepress": "^2.0.0-rc.14"
+    "@vuepress/bundler-vite": "^2.0.0-rc.26",
+    "@vuepress/theme-default": "^2.0.0-rc.26",
+    "sass-embedded": "^1.97.3",
+    "vue": "^3.2.0",
+    "vue-router": "^4.0.0",
+    "vuepress": "^2.0.0-rc.26"
+  },
+  "volta": {
+    "node": "20.19.5",
+    "pnpm": "10.15.1"
   }
 }

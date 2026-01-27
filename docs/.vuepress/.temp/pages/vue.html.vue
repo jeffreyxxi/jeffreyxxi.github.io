@@ -4,7 +4,7 @@
 <li>为了方便，采取最简单的方式，从github获取Vue项目，构建后获取未压缩vue.js，然后直接在页面中引入vue.js，逐步debugger，了解vue到底替我们做了什么；</li>
 </ul>
 <h4 id="html代码" tabindex="-1"><a class="header-anchor" href="#html代码"><span>html代码</span></a></h4>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">&lt;html></span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">&lt;html></span>
 <span class="line">  &lt;head></span>
 <span class="line">    </span>
 <span class="line">  &lt;/head></span>
@@ -19,7 +19,7 @@
 <span class="line">&lt;/html></span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><h4 id="debug-js-文档" tabindex="-1"><a class="header-anchor" href="#debug-js-文档"><span>debug.js 文档</span></a></h4>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">new Vue({</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">new Vue({</span>
 <span class="line">  el:"#app",</span>
 <span class="line">  data(){</span>
 <span class="line">    return{</span>
@@ -53,7 +53,7 @@
 <span class="line">});</span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><h4 id="vue-js-文件太长了-所以一步一步的写出来" tabindex="-1"><a class="header-anchor" href="#vue-js-文件太长了-所以一步一步的写出来"><span>vue.js 文件太长了，所以一步一步的写出来</span></a></h4>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">(function (global, factory) {</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">(function (global, factory) {</span>
 <span class="line">  // 判断是否node环境</span>
 <span class="line">  typeof exports === 'object' &amp;&amp; typeof module !=='undefined' ? </span>
 <span class="line">    module.exports = factory() :</span>
@@ -70,7 +70,7 @@
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><ul>
 <li>具体的一万多行中，一开始看定义了非常多的方法，根本不知道是干嘛的，不明白它做的事情的会记录一下，看不懂它的过程也会记录一下，简单的跳过；</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">var emptyObject = Object.freeze({});</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">var emptyObject = Object.freeze({});</span>
 <span class="line">// Object.freeze() 冻结对象，其他代码不能删除或更改任何属性</span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div></div></div></div></template>

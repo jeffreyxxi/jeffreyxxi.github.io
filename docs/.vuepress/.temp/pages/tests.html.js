@@ -1,3 +1,16 @@
-import comp from "/Users/jianjiuping/projects/jeffrey/notes/docs/.vuepress/.temp/pages/tests.html.vue"
-const data = JSON.parse("{\"path\":\"/tests.html\",\"title\":\"\",\"lang\":\"en-US\",\"frontmatter\":{\"prev\":\"./javascript\",\"next\":\"./\"},\"headers\":[{\"level\":2,\"title\":\"javascript\",\"slug\":\"javascript\",\"link\":\"#javascript\",\"children\":[{\"level\":3,\"title\":\"泛型\",\"slug\":\"泛型\",\"link\":\"#泛型\",\"children\":[]},{\"level\":3,\"title\":\"闭包\",\"slug\":\"闭包\",\"link\":\"#闭包\",\"children\":[]},{\"level\":3,\"title\":\"this 的指向问题\",\"slug\":\"this-的指向问题\",\"link\":\"#this-的指向问题\",\"children\":[]},{\"level\":3,\"title\":\"let、var、const 的区别\",\"slug\":\"let、var、const-的区别\",\"link\":\"#let、var、const-的区别\",\"children\":[]},{\"level\":3,\"title\":\"变量提升\",\"slug\":\"变量提升\",\"link\":\"#变量提升\",\"children\":[]},{\"level\":3,\"title\":\"js 的基本数据类型\",\"slug\":\"js-的基本数据类型\",\"link\":\"#js-的基本数据类型\",\"children\":[]},{\"level\":3,\"title\":\"Fetch Api\",\"slug\":\"fetch-api\",\"link\":\"#fetch-api\",\"children\":[]},{\"level\":3,\"title\":\"立即执行函数\",\"slug\":\"立即执行函数\",\"link\":\"#立即执行函数\",\"children\":[]},{\"level\":3,\"title\":\"堆和栈\",\"slug\":\"堆和栈\",\"link\":\"#堆和栈\",\"children\":[]},{\"level\":3,\"title\":\"执行机制/事件循环/任务/队列\",\"slug\":\"执行机制-事件循环-任务-队列\",\"link\":\"#执行机制-事件循环-任务-队列\",\"children\":[]},{\"level\":3,\"title\":\"简易版的 VUE 双向绑定\",\"slug\":\"简易版的-vue-双向绑定\",\"link\":\"#简易版的-vue-双向绑定\",\"children\":[]}]},{\"level\":2,\"title\":\"git\",\"slug\":\"git\",\"link\":\"#git\",\"children\":[{\"level\":3,\"title\":\"常见工作流的形式\",\"slug\":\"常见工作流的形式\",\"link\":\"#常见工作流的形式\",\"children\":[]}]},{\"level\":2,\"title\":\"css\",\"slug\":\"css\",\"link\":\"#css\",\"children\":[{\"level\":3,\"title\":\"css 的重绘和回流\",\"slug\":\"css-的重绘和回流\",\"link\":\"#css-的重绘和回流\",\"children\":[]},{\"level\":3,\"title\":\"为什么不建议将 font-size 设置为 12px 以下？\",\"slug\":\"为什么不建议将-font-size-设置为-12px-以下\",\"link\":\"#为什么不建议将-font-size-设置为-12px-以下\",\"children\":[]},{\"level\":3,\"title\":\"水平垂直同时居中的方式\",\"slug\":\"水平垂直同时居中的方式\",\"link\":\"#水平垂直同时居中的方式\",\"children\":[]}]},{\"level\":2,\"title\":\"综合问题\",\"slug\":\"综合问题\",\"link\":\"#综合问题\",\"children\":[{\"level\":3,\"title\":\"https 的加密方式\",\"slug\":\"https-的加密方式\",\"link\":\"#https-的加密方式\",\"children\":[]},{\"level\":3,\"title\":\"性能优化的方式\",\"slug\":\"性能优化的方式\",\"link\":\"#性能优化的方式\",\"children\":[]},{\"level\":3,\"title\":\"从浏览器地址栏输入网址，到网页彻底打开，中间过程\",\"slug\":\"从浏览器地址栏输入网址-到网页彻底打开-中间过程\",\"link\":\"#从浏览器地址栏输入网址-到网页彻底打开-中间过程\",\"children\":[]}]}],\"git\":{\"updatedTime\":1721738315000,\"contributors\":[{\"name\":\"jeffrey\",\"email\":\"1600793739@qq.com\",\"commits\":1}]},\"filePathRelative\":\"tests.md\"}")
+import comp from "E:/JeffreyProject/jeffrey_notes/docs/.vuepress/.temp/pages/tests.html.vue"
+const data = JSON.parse("{\"path\":\"/tests.html\",\"title\":\"\",\"lang\":\"en-US\",\"frontmatter\":{\"prev\":\"./javascript\",\"next\":\"./\"},\"git\":{\"updatedTime\":1721738315000,\"contributors\":[{\"name\":\"jeffrey\",\"username\":\"jeffrey\",\"email\":\"1600793739@qq.com\",\"commits\":1,\"url\":\"https://github.com/jeffrey\"}],\"changelog\":[{\"hash\":\"d57e073e3a61913f95747374e581dd1d3e51b1e2\",\"time\":1721738315000,\"email\":\"1600793739@qq.com\",\"author\":\"jeffrey\",\"message\":\"老仓库迁徙更新\"}]},\"filePathRelative\":\"tests.md\"}")
 export { comp, data }
+
+if (import.meta.webpackHot) {
+  import.meta.webpackHot.accept()
+  if (__VUE_HMR_RUNTIME__.updatePageData) {
+    __VUE_HMR_RUNTIME__.updatePageData(data)
+  }
+}
+
+if (import.meta.hot) {
+  import.meta.hot.accept(({ data }) => {
+    __VUE_HMR_RUNTIME__.updatePageData(data)
+  })
+}

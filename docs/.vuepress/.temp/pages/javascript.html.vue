@@ -58,7 +58,7 @@
 <ul>
 <li>call() 方法使用一个指定的 this 值和单独给出的一个或多个参数来调用一个函数。</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">var funcTestCall = function(p1,p2){</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">var funcTestCall = function(p1,p2){</span>
 <span class="line">  return this.a + p1 + p2;</span>
 <span class="line">}</span>
 <span class="line">var objTestCall = {a:4}</span>
@@ -70,7 +70,7 @@
 <ul>
 <li>apply() 方法调用一个具有给定 this 值的函数，以及作为一个数组（或类似数组对象）提供的参数。</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">var funcTestApply = function(p1,p2){</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">var funcTestApply = function(p1,p2){</span>
 <span class="line">  return this.a + p1 + p2;</span>
 <span class="line">}</span>
 <span class="line">var objTestApply = {a:4}</span>
@@ -83,7 +83,7 @@
 <ul>
 <li>bind() 方法创建一个新的函数，在 bind() 被调用时，这个新函数的 this 被指定为 bind() 的第一个参数，而其余参数将作为新函数的参数，供调用时使用。</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">var funcTestBind = function(p1,p2){</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">var funcTestBind = function(p1,p2){</span>
 <span class="line">  return this.a + p1 + p2;</span>
 <span class="line">}</span>
 <span class="line">var objTestBind = {a:3};</span>
@@ -108,7 +108,7 @@
 <ul>
 <li>创建绑定函数： 创建一个函数，这个函数不管怎么调用，都有同样的 this 值；</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">window.x = 9;</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">window.x = 9;</span>
 <span class="line">var obj = {</span>
 <span class="line">  x:81,</span>
 <span class="line">  getX:function(){return this.x;}</span>
@@ -123,7 +123,7 @@
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><ul>
 <li>创建偏函数：使一个函数拥有预设的初始参数。</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">function add (p1,p2){</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">function add (p1,p2){</span>
 <span class="line">  return p1 + p2;</span>
 <span class="line">}</span>
 <span class="line">var addBind = add.bind(null,20);</span>
@@ -145,7 +145,7 @@
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><ul>
 <li>在默认情况下，使用 window.setTimeout() 时，this 关键字会指向 window （或 global）对象。当类的方法中需要 this 指向类的实例时，你可能需要显式地把 this 绑定到回调函数，就不会丢失该实例的引用。</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">function LateBloomer() {</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">function LateBloomer() {</span>
 <span class="line">  this.petalCount = Math.ceil(Math.random() * 12) + 1;</span>
 <span class="line">}</span>
 <span class="line"></span>
@@ -187,7 +187,7 @@
 </ul>
 <h2 id="boolean-对象" tabindex="-1"><a class="header-anchor" href="#boolean-对象"><span>Boolean 对象</span></a></h2>
 <h4 id="语法" tabindex="-1"><a class="header-anchor" href="#语法"><span>语法</span></a></h4>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">new Boolean([value]) // value 可选，用来初始化 Boolean 对象的值。</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">new Boolean([value]) // value 可选，用来初始化 Boolean 对象的值。</span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div></div></div><h4 id="描述" tabindex="-1"><a class="header-anchor" href="#描述"><span>描述</span></a></h4>
 <p>如果第一个参数不是布尔值，则会将其转换为布尔值。如果省略该参数，或者其值为 0、-0、null、false、NaN、undefined、或者空字符串（&quot;&quot;），则生成的 Boolean 对象的值为 false。如果传入的参数是 DOM 对象 document.all，也会生成值为 false 的 Boolean 对象。任何其他的值，包括值为 &quot;false&quot; 的字符串和任何对象，都会创建一个值为 true 的 Boolean 对象。</p>
@@ -217,7 +217,7 @@
 <ul>
 <li>直接使用字面量</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">var obj1 = {key1:"value1",key2:"value2"};</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">var obj1 = {key1:"value1",key2:"value2"};</span>
 <span class="line"></span>
 <span class="line">var obj4 = {</span>
 <span class="line">  key:1,</span>
@@ -232,7 +232,7 @@
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><ul>
 <li>new Object()</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">var obj2 = new Object({key1:"value1",key2:"value2"});</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">var obj2 = new Object({key1:"value1",key2:"value2"});</span>
 <span class="line"></span>
 <span class="line">// ECMAScript 2015 也可以这么写</span>
 <span class="line">var a = 1; var b = "name is b"; var c = {};</span>
@@ -246,7 +246,7 @@
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><ul>
 <li>使用 Object.create()</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">var obj3 = Object.create({key1:"value1",key2:"value2"});</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">var obj3 = Object.create({key1:"value1",key2:"value2"});</span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div></div></div><p><strong><span style="color:#F56C6C">注意!使用 create 创建的新对象,一定要注意 数据描述符 和 存取描述符 的属性配置</span></strong></p>
 <h3 id="object-对象描述符的配置项" tabindex="-1"><a class="header-anchor" href="#object-对象描述符的配置项"><span>Object - 对象描述符的配置项</span></a></h3>
@@ -271,7 +271,7 @@
 <ul>
 <li>语法</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">Object.create(proto, propertiesObject)</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">Object.create(proto, propertiesObject)</span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div></div></div><ul>
 <li>参数</li>
@@ -279,7 +279,7 @@
 <p><em>proto</em> 新创建对象的原型对象。<br/></p>
 <p><em>propertiesObject</em> 可选。如果没有指定为 undefined，否则是要添加到新创建对象的属性。<br/></p>
 <p><strong><span style="color:#F56C6C">注意!!! 添加的属性的描述符的配置项的默认值如果不配置的话,可能会影响对象的使用,比如不可以写不可枚举等.</span></strong></p>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">var n = Object.create(</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">var n = Object.create(</span>
 <span class="line">  {key:"123"},</span>
 <span class="line">  {key2:</span>
 <span class="line">    {</span>
@@ -311,7 +311,7 @@
 <ul>
 <li>语法</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">Object.assign(target, ...sources)</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">Object.assign(target, ...sources)</span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div></div></div><ul>
 <li>参数</li>
@@ -326,7 +326,7 @@
 <ul>
 <li>语法</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">Object.defineProperty(obj,prop,descriptors)</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">Object.defineProperty(obj,prop,descriptors)</span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div></div></div><p><em>obj</em> 要修改的对象<br/>
 <em>prop</em> 要创建或者要修改的属性<br/>
@@ -341,7 +341,7 @@
 <ol>
 <li>如果访问者的属性是被继承的，它的 get 和 set 方法会在子对象的属性被访问或者修改时被调用。如果这些方法用一个变量存值，该值会被所有对象共享。</li>
 </ol>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">function origin (){};</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">function origin (){};</span>
 <span class="line">var realValue = 0;</span>
 <span class="line">var obj = Object.defineProperty(origin.prototype,"key",{</span>
 <span class="line">  get(){ return realValue; },</span>
@@ -359,7 +359,7 @@
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><ol start="2">
 <li>在 get 和 set 方法中，this 指向某个被访问和修改属性的对象。所以上述问题可以通过存储在另一个属性中解决;</li>
 </ol>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">function origin (){};</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">function origin (){};</span>
 <span class="line">var obj = Object.defineProperty(origin.prototype,"key",{</span>
 <span class="line">  get(){ return this._key; },</span>
 <span class="line">  set(v){ this._key = v; }</span>
@@ -376,7 +376,7 @@
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><ol start="3">
 <li>与上述描述的访问者属性不同的是，值属性始终在对象自身上设置，而不是一个原型。然而，如果一个不可写的属性被继承，它仍然可以防止修改对象的属性。</li>
 </ol>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">function origin (){};</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">function origin (){};</span>
 <span class="line">origin.prototype.key_x = 1;</span>
 <span class="line">var obj = Object.defineProperty(origin.prototype,"key_y",{</span>
 <span class="line"> value:2,</span>
@@ -399,14 +399,14 @@
 <ul>
 <li>语法</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">Object.defineProperties(obj,props)</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">Object.defineProperties(obj,props)</span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div></div></div><ul>
 <li>参数</li>
 </ul>
 <p><em>obj</em> 在其上定义或修改属性的对象。</p>
 <p><em>props</em> 要添加或者要修改的属性的集合</p>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">var origin = {};</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">var origin = {};</span>
 <span class="line"></span>
 <span class="line">var n = Object.defineProperties(origin,{</span>
 <span class="line">  key_x:{configurable:true,enumberable:true,value:1,writable:true},</span>
@@ -423,20 +423,20 @@
 <li>参数</li>
 </ul>
 <p><em>obj</em> 可以返回其可枚举属性的键值对的对象。</p>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">Object.entries(obj);</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">Object.entries(obj);</span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div></div></div><ul>
 <li>常用写法以及注意事项</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">let obj = {key1:1,key2:"value2"}</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">let obj = {key1:1,key2:"value2"}</span>
 <span class="line"></span>
 <span class="line">let arr = Object.entries(obj); // arr => [["key1",1],["key2","value2"]]</span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><p><em><span style="color:#F56C6C">注意~! 顺序不一样了!</span></em></p>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">const anObj = { 100: 'a', 2: 'b', 7: 'c' };</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">const anObj = { 100: 'a', 2: 'b', 7: 'c' };</span>
 <span class="line">console.log(Object.entries(anObj)); // =>  [ ['2', 'b'], ['7', 'c'], ['100', 'a'] ]</span>
 <span class="line"></span></code></pre>
-<div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div></div></div><div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">// 如果是存取描述符</span>
+<div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div></div></div><div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">// 如果是存取描述符</span>
 <span class="line">const myObj = Object.create({}, { getFoo: { value() { return this.foo; } } });</span>
 <span class="line">myObj.foo = 'bar';</span>
 <span class="line">console.log(Object.entries(myObj)); // => [ ['foo', 'bar'] ]</span>
@@ -459,7 +459,7 @@
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><ul>
 <li>对象转 Map 对象</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">let obj = {key1:1,key2:"value2"}</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">let obj = {key1:1,key2:"value2"}</span>
 <span class="line">let map = new Map(Object.entries(obj))</span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div></div></div><h3 id="object-fromentries" tabindex="-1"><a class="header-anchor" href="#object-fromentries"><span>Object.fromEntries()</span></a></h3>
@@ -470,13 +470,13 @@
 <ul>
 <li>语法和参数</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">Object.fromEntries(iterable);</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">Object.fromEntries(iterable);</span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div></div></div><p><em>iterable</em> 可以是数组或者 Map 对象或者其它实现了可迭代协议的对象。</p>
 <ul>
 <li>Map 转对象</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">let obj = {key1:1,key2:"value2"}</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">let obj = {key1:1,key2:"value2"}</span>
 <span class="line">let map = new Map(Object.entries(obj))</span>
 <span class="line"></span>
 <span class="line">let n = Object.fromEntries(map);</span>
@@ -498,7 +498,7 @@
 <ul>
 <li>参数和返回值</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">Object.seal(obj)</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">Object.seal(obj)</span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div></div></div><p>obj: 要被密封的对象, 返回被密封的对象</p>
 <p><em><span style="color:#F56C6C">注意~! 不会影响从原型链上继承的属性</span></em></p>
@@ -517,7 +517,7 @@
 <ul>
 <li>参数和返回值</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">Object.is(value1, value2);</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">Object.is(value1, value2);</span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div></div></div><p>value1: 被比较的第一个值。value2: 被比较的第二个值。</p>
 <p>返回: 一个 Boolean 类型标示两个参数是否是同一个值。</p>
@@ -538,7 +538,7 @@
 <ul>
 <li>语法和参数</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">var ds = Object.getOwnPropertyDescriptor(obj, prop);</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">var ds = Object.getOwnPropertyDescriptor(obj, prop);</span>
 <span class="line"></span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div></div></div><p><em>obj</em> 指定对象 ，<em>obj</em> 指定属性</p>
@@ -554,7 +554,7 @@
 <ul>
 <li>语法和参数</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">var ds = Object.getOwnPropertyDescriptors(obj);</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">var ds = Object.getOwnPropertyDescriptors(obj);</span>
 <span class="line"></span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div></div></div><p><em>obj</em> 指定对象</p>
@@ -566,12 +566,12 @@
 <li>浅拷贝一个对象</li>
 </ul>
 <p>Object.assign() 方法只能拷贝源对象的可枚举的自身属性，同时拷贝时无法拷贝属性的特性们，而且访问器属性会被转换成数据属性，也无法拷贝源对象的原型，该方法配合 Object.create() 方法可以实现上面说的这些。</p>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">Object.create(Object.getPrototypeOf(obj), Object.getOwnPropertyDescriptors(obj));</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">Object.create(Object.getPrototypeOf(obj), Object.getOwnPropertyDescriptors(obj));</span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div></div></div><ul>
 <li>创建一个子类</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">function superclass() {}</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">function superclass() {}</span>
 <span class="line">superclass.prototype = {</span>
 <span class="line">  // 在这里定义方法和属性</span>
 <span class="line">};</span>
@@ -589,7 +589,7 @@
 <ul>
 <li>语法和参数</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">Object.getOwnPropertyNames(obj);</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">Object.getOwnPropertyNames(obj);</span>
 <span class="line"></span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div></div></div><p><em>obj</em> 指定对象</p>
@@ -605,7 +605,7 @@
 <ul>
 <li>语法和参数</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">Object.getOwnPropertySymbols(obj);</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">Object.getOwnPropertySymbols(obj);</span>
 <span class="line"></span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div></div></div><p><em>obj</em> 指定对象</p>
@@ -621,7 +621,7 @@
 <ul>
 <li>语法和参数</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">Object.getPrototypeOf(obj);</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">Object.getPrototypeOf(obj);</span>
 <span class="line"></span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div></div></div><p><em>obj</em> 要返回其原型的对象</p>
@@ -638,7 +638,7 @@
 <ul>
 <li>语法和参数</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">Object.setPrototypeOf(obj, prototype)</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">Object.setPrototypeOf(obj, prototype)</span>
 <span class="line"></span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div></div></div><p><em>obj</em> 要设置其原型的对象。
@@ -651,7 +651,7 @@
 <ul>
 <li>语法和参数</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">Object.hasOwnProperty(prop);</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">Object.hasOwnProperty(prop);</span>
 <span class="line"></span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div></div></div><p><em>prop</em> 要检测的属性的 String 字符串形式表示的名称，或者 Symbol。</p>
@@ -667,7 +667,7 @@
 <ul>
 <li>语法和参数</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">Object.isExtensible(obj)</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">Object.isExtensible(obj)</span>
 <span class="line"></span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div></div></div><p><em>obj</em> 需要检测的对象</p>
@@ -683,7 +683,7 @@
 <ul>
 <li>语法和参数</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">obj.propertyIsEnumerable(prop)</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">obj.propertyIsEnumerable(prop)</span>
 <span class="line"></span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div></div></div><p><em>prop</em> 需要测试的属性名。</p>
@@ -699,7 +699,7 @@
 <ul>
 <li>语法和参数</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">Object.keys(obj)</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">Object.keys(obj)</span>
 <span class="line"></span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div></div></div><p><em>obj</em> 要返回其枚举自身属性的对象。</p>
@@ -716,7 +716,7 @@
 <ul>
 <li>语法和参数</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">Object.values(obj)</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">Object.values(obj)</span>
 <span class="line"></span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div></div></div><p><em>obj</em> 要返回其枚举自身属性值的对象。</p>
@@ -732,7 +732,7 @@
 <ul>
 <li>语法和参数</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">Object.preventExtensions(obj)</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">Object.preventExtensions(obj)</span>
 <span class="line"></span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div></div></div><p><em>obj</em> 将要变得不可扩展的对象。</p>
@@ -754,7 +754,7 @@
 <ul>
 <li>语法和参数</li>
 </ul>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">object.valueOf()</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">object.valueOf()</span>
 <span class="line"></span>
 <span class="line"></span></code></pre>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div></div></div><ul>

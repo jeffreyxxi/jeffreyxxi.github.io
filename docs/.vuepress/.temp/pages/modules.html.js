@@ -1,3 +1,16 @@
-import comp from "/Users/jianjiuping/projects/jeffrey/notes/docs/.vuepress/.temp/pages/modules.html.vue"
-const data = JSON.parse("{\"path\":\"/modules.html\",\"title\":\"\",\"lang\":\"en-US\",\"frontmatter\":{\"prev\":\"./node\",\"next\":\"./singlechip\"},\"headers\":[{\"level\":2,\"title\":\"Node 学习和笔记整理\",\"slug\":\"node-学习和笔记整理\",\"link\":\"#node-学习和笔记整理\",\"children\":[]},{\"level\":2,\"title\":\"插件/开源代码使用笔记\",\"slug\":\"插件-开源代码使用笔记\",\"link\":\"#插件-开源代码使用笔记\",\"children\":[{\"level\":3,\"title\":\"富文本编辑插件\",\"slug\":\"富文本编辑插件\",\"link\":\"#富文本编辑插件\",\"children\":[]}]}],\"git\":{\"updatedTime\":1721738315000,\"contributors\":[{\"name\":\"jeffrey\",\"email\":\"1600793739@qq.com\",\"commits\":1}]},\"filePathRelative\":\"modules.md\"}")
+import comp from "E:/JeffreyProject/jeffrey_notes/docs/.vuepress/.temp/pages/modules.html.vue"
+const data = JSON.parse("{\"path\":\"/modules.html\",\"title\":\"\",\"lang\":\"en-US\",\"frontmatter\":{\"prev\":\"./node\",\"next\":\"./singlechip\"},\"git\":{\"updatedTime\":1721738315000,\"contributors\":[{\"name\":\"jeffrey\",\"username\":\"jeffrey\",\"email\":\"1600793739@qq.com\",\"commits\":1,\"url\":\"https://github.com/jeffrey\"}],\"changelog\":[{\"hash\":\"d57e073e3a61913f95747374e581dd1d3e51b1e2\",\"time\":1721738315000,\"email\":\"1600793739@qq.com\",\"author\":\"jeffrey\",\"message\":\"老仓库迁徙更新\"}]},\"filePathRelative\":\"modules.md\"}")
 export { comp, data }
+
+if (import.meta.webpackHot) {
+  import.meta.webpackHot.accept()
+  if (__VUE_HMR_RUNTIME__.updatePageData) {
+    __VUE_HMR_RUNTIME__.updatePageData(data)
+  }
+}
+
+if (import.meta.hot) {
+  import.meta.hot.accept(({ data }) => {
+    __VUE_HMR_RUNTIME__.updatePageData(data)
+  })
+}

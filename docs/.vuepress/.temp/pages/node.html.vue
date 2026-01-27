@@ -4,7 +4,7 @@
 <h3 id="npx" tabindex="-1"><a class="header-anchor" href="#npx"><span>npx</span></a></h3>
 <p>项目下的包管理工具</p>
 <h3 id="mac切换node版本后-yarn-命令-not-found" tabindex="-1"><a class="header-anchor" href="#mac切换node版本后-yarn-命令-not-found"><span>mac切换node版本后，yarn 命令 not found</span></a></h3>
-<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text" data-title="text"><pre v-pre class="language-text"><code><span class="line">1. npm config get prefix</span>
+<div class="language-text line-numbers-mode" data-highlighter="prismjs" data-ext="text"><pre v-pre><code class="language-text"><span class="line">1. npm config get prefix</span>
 <span class="line">//- /Users/stavinli/.nvm/versions/node/v14.8.0</span>
 <span class="line"></span>
 <span class="line">2. npm config set prefix /Users/stavinli/.nvm/versions/node/【你切换后的版本】</span>
