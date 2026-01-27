@@ -7,8 +7,8 @@ export default defineUserConfig({
   bundler: viteBundler(),
   theme: defaultTheme({
     navbar: [
-      
-      
+
+
 
       {
         text: "前端语言",
@@ -16,14 +16,16 @@ export default defineUserConfig({
         children: [
           { text: "html", link: "" },
           { text: "javascript", link: "/javascript" },
-          { text: "css", link: "" }
+          { text: "css", link: "" },
+          { text: "tests", link: "/tests" },
+          { text: "vue", link: "/vue" }
         ]
       },
       {
         text: "框架",
         prefix: "frame",
         children: [
-          { text: "vue", link: "/vue" }
+
         ]
       },
       {
@@ -40,7 +42,7 @@ export default defineUserConfig({
           { text: "linux", link: "/linux" },
           { text: "modules", link: "/modules" },
           { text: "node", link: "/node" },
-          { text: "tests", link: "/tests" },
+
         ]
       },
     ]

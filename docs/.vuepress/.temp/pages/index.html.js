@@ -1,4 +1,4 @@
-import comp from "E:/JeffreyProject/jeffrey_notes/docs/.vuepress/.temp/pages/index.html.vue"
+import comp from "/Users/jianjiuping/projects/jeffrey/notes/docs/.vuepress/.temp/pages/index.html.vue"
 const data = JSON.parse("{\"path\":\"/\",\"title\":\"\",\"lang\":\"en-US\",\"frontmatter\":{\"home\":true,\"heroText\":\"Jeffrey‘s Notes\",\"tagline\":\"the palest ink is better than the best memory.\",\"footer\":\"written by jeffrey\"},\"git\":{\"updatedTime\":1721738315000,\"contributors\":[{\"name\":\"jeffrey\",\"username\":\"jeffrey\",\"email\":\"1600793739@qq.com\",\"commits\":1,\"url\":\"https://github.com/jeffrey\"}],\"changelog\":[{\"hash\":\"d57e073e3a61913f95747374e581dd1d3e51b1e2\",\"time\":1721738315000,\"email\":\"1600793739@qq.com\",\"author\":\"jeffrey\",\"message\":\"老仓库迁徙更新\"}]},\"filePathRelative\":\"readme.md\"}")
 export { comp, data }
 

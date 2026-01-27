@@ -34,6 +34,52 @@ scp 是加密的，rcp 是不加密的，scp 是 rcp 的加强版。</p>
 <div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><h3 id="ssh-远程登陆" tabindex="-1"><a class="header-anchor" href="#ssh-远程登陆"><span>ssh 远程登陆</span></a></h3>
 <div class="language-bash line-numbers-mode" data-highlighter="prismjs" data-ext="sh"><pre v-pre><code class="language-bash"><span class="line"><span class="token function">ssh</span> <span class="token parameter variable">-p</span> port useraccount@remote_address</span>
 <span class="line"></span></code></pre>
-<div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div></div></div></div></template>
+<div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div></div></div><h3 id="nginx-操作" tabindex="-1"><a class="header-anchor" href="#nginx-操作"><span>nginx 操作</span></a></h3>
+<div class="language-bash line-numbers-mode" data-highlighter="prismjs" data-ext="sh"><pre v-pre><code class="language-bash"><span class="line"></span>
+<span class="line"><span class="token function">sudo</span> systemctl start nginx <span class="token comment"># 启动ng</span></span>
+<span class="line"></span>
+<span class="line"><span class="token function">sudo</span> systemctl reload nginx <span class="token comment">#重新加载</span></span>
+<span class="line"></span>
+<span class="line"><span class="token function">sudo</span> systemctl stop nginx <span class="token comment">#停止ng</span></span>
+<span class="line"></span></code></pre>
+<div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div><h3 id="nano操作" tabindex="-1"><a class="header-anchor" href="#nano操作"><span>nano操作</span></a></h3>
+<div class="language-bash line-numbers-mode" data-highlighter="prismjs" data-ext="sh"><pre v-pre><code class="language-bash"><span class="line"><span class="token function">nano</span> file_name.file</span>
+<span class="line"></span></code></pre>
+<div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div></div></div><h3 id="文件移动" tabindex="-1"><a class="header-anchor" href="#文件移动"><span>文件移动</span></a></h3>
+<p>mv命令不仅可以用于重命名文件或目录，还可以用于移动它们。使用mv命令重命名的基本语法非常简单.</p>
+<div class="language-bash line-numbers-mode" data-highlighter="prismjs" data-ext="sh"><pre v-pre><code class="language-bash"><span class="line"><span class="token function">mv</span> 原文件名 新文件名</span>
+<span class="line"><span class="token function">mv</span> myFile newName</span>
+<span class="line"></span></code></pre>
+<div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div></div></div><h3 id="rm-rf" tabindex="-1"><a class="header-anchor" href="#rm-rf"><span>rm -rf</span></a></h3>
+<p>rm -rf 是一个强大的 Linux 命令，用于递归删除目录及其内容，并且不会提示确认。这个命令非常危险，因为它会删除指定目录及其所有子目录和文件，且无法恢复。</p>
+<div class="language-bash line-numbers-mode" data-highlighter="prismjs" data-ext="sh"><pre v-pre><code class="language-bash"><span class="line"><span class="token function">rm</span> <span class="token parameter variable">-rf</span> /path/to/directory <span class="token comment">#此命令将删除 /path/to/directory 及其所有内容。</span></span>
+<span class="line"></span></code></pre>
+<div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div></div></div><h3 id="unzip" tabindex="-1"><a class="header-anchor" href="#unzip"><span>unzip</span></a></h3>
+<div class="language-bash line-numbers-mode" data-highlighter="prismjs" data-ext="sh"><pre v-pre><code class="language-bash"><span class="line"><span class="token comment">#1. 解压到当前目录</span></span>
+<span class="line"><span class="token function">unzip</span> archive.zip</span>
+<span class="line"></span>
+<span class="line"><span class="token comment"># 2. 解压到指定目录</span></span>
+<span class="line"><span class="token function">unzip</span> archive.zip <span class="token parameter variable">-d</span> /path/to/directory</span>
+<span class="line"></span>
+<span class="line"><span class="token comment">#3. 查看 .zip 文件内容</span></span>
+<span class="line"><span class="token function">unzip</span> <span class="token parameter variable">-l</span> archive.zip</span>
+<span class="line"></span>
+<span class="line"><span class="token comment">#4. 测试 .zip 文件完整性</span></span>
+<span class="line"><span class="token function">unzip</span> <span class="token parameter variable">-t</span> archive.zip</span>
+<span class="line"></span>
+<span class="line"><span class="token comment">#5. 解压时覆盖已存在文件</span></span>
+<span class="line"><span class="token function">unzip</span> <span class="token parameter variable">-o</span> archive.zip</span>
+<span class="line"></span>
+<span class="line"><span class="token comment">#6. 解压时不覆盖已存在文件</span></span>
+<span class="line"><span class="token function">unzip</span> <span class="token parameter variable">-n</span> archive.zip</span>
+<span class="line"></span>
+<span class="line"><span class="token comment">#7. 解压带密码的 .zip 文件</span></span>
+<span class="line"><span class="token function">unzip</span> <span class="token parameter variable">-P</span> 密码 archive.zip</span>
+<span class="line"></span>
+<span class="line"><span class="token comment"># 8. 排除特定文件解压</span></span>
+<span class="line"><span class="token function">unzip</span> archive.zip <span class="token parameter variable">-x</span> <span class="token string">"*.log"</span></span>
+<span class="line"></span>
+<span class="line"></span></code></pre>
+<div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div></div></template>
 
 
