@@ -1,3 +1,16 @@
-import comp from "/Users/jianjiuping/projects/jeffrey/notes/docs/.vuepress/.temp/pages/index.html.vue"
-const data = JSON.parse("{\"path\":\"/\",\"title\":\"\",\"lang\":\"en-US\",\"frontmatter\":{\"home\":true,\"heroText\":\"Jeffrey‘s Notes\",\"tagline\":\"the palest ink is better than the best memory.\",\"footer\":\"written by jeffrey\"},\"headers\":[{\"level\":3,\"title\":\"git 入门\",\"slug\":\"git-入门\",\"link\":\"#git-入门\",\"children\":[]},{\"level\":3,\"title\":\"重学 Javascript\",\"slug\":\"重学-javascript\",\"link\":\"#重学-javascript\",\"children\":[]},{\"level\":3,\"title\":\"面试整理\",\"slug\":\"面试整理\",\"link\":\"#面试整理\",\"children\":[]},{\"level\":3,\"title\":\"Vue 笔记\",\"slug\":\"vue-笔记\",\"link\":\"#vue-笔记\",\"children\":[]},{\"level\":3,\"title\":\"Linux 命令\",\"slug\":\"linux-命令\",\"link\":\"#linux-命令\",\"children\":[]},{\"level\":3,\"title\":\"Node 学习\",\"slug\":\"node-学习\",\"link\":\"#node-学习\",\"children\":[]},{\"level\":3,\"title\":\"插件收集\",\"slug\":\"插件收集\",\"link\":\"#插件收集\",\"children\":[]}],\"git\":{\"updatedTime\":1721738315000,\"contributors\":[{\"name\":\"jeffrey\",\"email\":\"1600793739@qq.com\",\"commits\":1}]},\"filePathRelative\":\"readme.md\"}")
+import comp from "E:/JeffreyProject/jeffrey_notes/docs/.vuepress/.temp/pages/index.html.vue"
+const data = JSON.parse("{\"path\":\"/\",\"title\":\"\",\"lang\":\"en-US\",\"frontmatter\":{\"home\":true,\"heroText\":\"Jeffrey‘s Notes\",\"tagline\":\"the palest ink is better than the best memory.\",\"footer\":\"written by jeffrey\"},\"git\":{\"updatedTime\":1721738315000,\"contributors\":[{\"name\":\"jeffrey\",\"username\":\"jeffrey\",\"email\":\"1600793739@qq.com\",\"commits\":1,\"url\":\"https://github.com/jeffrey\"}],\"changelog\":[{\"hash\":\"d57e073e3a61913f95747374e581dd1d3e51b1e2\",\"time\":1721738315000,\"email\":\"1600793739@qq.com\",\"author\":\"jeffrey\",\"message\":\"老仓库迁徙更新\"}]},\"filePathRelative\":\"readme.md\"}")
 export { comp, data }
+
+if (import.meta.webpackHot) {
+  import.meta.webpackHot.accept()
+  if (__VUE_HMR_RUNTIME__.updatePageData) {
+    __VUE_HMR_RUNTIME__.updatePageData(data)
+  }
+}
+
+if (import.meta.hot) {
+  import.meta.hot.accept(({ data }) => {
+    __VUE_HMR_RUNTIME__.updatePageData(data)
+  })
+}
