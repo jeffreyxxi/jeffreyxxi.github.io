@@ -1,8 +1,6 @@
 ---
 prev: false
-next: 
-  text: Javascript
-  link: ./javascript
+next: /javascript
 ---
 
 ## git 使用笔记

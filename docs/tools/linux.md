@@ -1,6 +1,6 @@
 ---
-prev: ./javascript
-next: ./node
+prev: /vue
+next: /dev_note
 ---
 
 ## Linux 命令整理
@@ -37,19 +37,20 @@ scp [-1246BCpqrv] [-c cipher] [-F ssh_config] [-i identity_file] [-l limit] [-o 
 # -S program： 指定加密传输时所使用的程序。此程序必须能够理解ssh(1)的选项。
 
 # 简易
-scp [可选参数] file_source file_target 
+scp [可选参数] file_source file_target
 
 # 举例
 scp -r ./* develop@www.dalitek.online:/opt/project/dalitek_hr/app/public/
 ```
 
 ### ssh 远程登陆
+
 ```bash
 ssh -p port useraccount@remote_address
 ```
 
-
 ### nginx 操作
+
 ```bash
 
 sudo systemctl start nginx # 启动ng
@@ -60,12 +61,13 @@ sudo systemctl stop nginx #停止ng
 ```
 
 ### nano操作
+
 ```bash
 nano file_name.file
 ```
 
-
 ### 文件移动
+
 mv命令不仅可以用于重命名文件或目录，还可以用于移动它们。使用mv命令重命名的基本语法非常简单.
 
 ```bash
@@ -74,12 +76,15 @@ mv myFile newName
 ```
 
 ### rm -rf
+
 rm -rf 是一个强大的 Linux 命令，用于递归删除目录及其内容，并且不会提示确认。这个命令非常危险，因为它会删除指定目录及其所有子目录和文件，且无法恢复。
+
 ```bash
 rm -rf /path/to/directory #此命令将删除 /path/to/directory 及其所有内容。
 ```
 
 ### unzip
+
 ```bash
 #1. 解压到当前目录
 unzip archive.zip

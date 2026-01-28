@@ -15,31 +15,14 @@ tagline: the palest ink is better than the best memory.
 footer: written by jeffrey
 ---
 
-### [git 入门](/git/)
+### [工具](/tools/git)
 
-git 入门操作和记录使用过程中遇到问题的解决途径
+[git 日常使用](/tools/git) / [linux 服务器操作](/tools/linux)
 
-### [重学 Javascript](/javascript/)
+### [前端笔记](/tests/)
 
 整理 javascript 的一下基础知识
 
 ### [面试整理](/tests/)
 
 记录一些面试题目,方便自己也方便他人
-
-### [Vue 笔记](/vue/)
-
-Vue 的原理理解，源码阅读和记录使用过程中遇到的问题
-
-### [Linux 命令](/linux/)
-
-Linux 系统的使用和常见 Linux 命令记录
-
-### [Node 学习](/node/)
-
-后端学习和过程中的记录
-
-### [插件收集](/modules/)
-
-各种用过的没用过的觉得可能会用的样式插件功能插件的收集
-

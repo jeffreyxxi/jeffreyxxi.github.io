@@ -1,17 +1,9 @@
-<template><div><h3 id="git-入门" tabindex="-1"><a class="header-anchor" href="#git-入门"><span><RouteLink to="/git/">git 入门</RouteLink></span></a></h3>
-<p>git 入门操作和记录使用过程中遇到问题的解决途径</p>
-<h3 id="重学-javascript" tabindex="-1"><a class="header-anchor" href="#重学-javascript"><span><RouteLink to="/javascript/">重学 Javascript</RouteLink></span></a></h3>
+<template><div><h3 id="工具" tabindex="-1"><a class="header-anchor" href="#工具"><span><a href="/tools/git">工具</a></span></a></h3>
+<p><a href="/tools/git">git 日常使用</a> / <a href="/tools/linux">linux 服务器操作</a></p>
+<h3 id="前端笔记" tabindex="-1"><a class="header-anchor" href="#前端笔记"><span><RouteLink to="/tests/">前端笔记</RouteLink></span></a></h3>
 <p>整理 javascript 的一下基础知识</p>
 <h3 id="面试整理" tabindex="-1"><a class="header-anchor" href="#面试整理"><span><RouteLink to="/tests/">面试整理</RouteLink></span></a></h3>
 <p>记录一些面试题目,方便自己也方便他人</p>
-<h3 id="vue-笔记" tabindex="-1"><a class="header-anchor" href="#vue-笔记"><span><RouteLink to="/vue/">Vue 笔记</RouteLink></span></a></h3>
-<p>Vue 的原理理解，源码阅读和记录使用过程中遇到的问题</p>
-<h3 id="linux-命令" tabindex="-1"><a class="header-anchor" href="#linux-命令"><span><RouteLink to="/linux/">Linux 命令</RouteLink></span></a></h3>
-<p>Linux 系统的使用和常见 Linux 命令记录</p>
-<h3 id="node-学习" tabindex="-1"><a class="header-anchor" href="#node-学习"><span><RouteLink to="/node/">Node 学习</RouteLink></span></a></h3>
-<p>后端学习和过程中的记录</p>
-<h3 id="插件收集" tabindex="-1"><a class="header-anchor" href="#插件收集"><span><RouteLink to="/modules/">插件收集</RouteLink></span></a></h3>
-<p>各种用过的没用过的觉得可能会用的样式插件功能插件的收集</p>
 </div></template>
 
 

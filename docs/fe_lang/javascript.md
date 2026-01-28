@@ -1,6 +1,6 @@
 ---
-prev: ./git
-next: ./tests
+prev: /
+next: ./dev_note
 ---
 
 ## 重学 Javescript
