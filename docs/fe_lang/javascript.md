@@ -1,6 +1,10 @@
 ---
-prev: /
-next: ./dev_note
+prev:
+  text: linux 服务器操作
+  link: /tools/linux
+next:
+  text: 开发随笔
+  link: /fe_lang/dev_note
 ---
 
 ## 重学 Javescript

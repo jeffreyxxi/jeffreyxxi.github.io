@@ -1,6 +1,10 @@
 ---
-prev: /linux
-next: /stock
+prev:
+  text: javascript 笔记
+  link: /fe_lang/javascript
+next:
+  text: 面试总结
+  link: /fe_lang/tests
 ---
 
 ## 随笔笔记

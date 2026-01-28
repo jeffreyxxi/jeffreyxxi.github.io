@@ -1,6 +1,10 @@
 ---
-prev: /vue
-next: /dev_note
+prev:
+  text: git 日常使用
+  link: /tools/git
+next:
+  text: javascript 笔记
+  link: /fe_lang/javascript
 ---
 
 ## Linux 命令整理

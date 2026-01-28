@@ -8,6 +8,14 @@ export default defineUserConfig({
   theme: defaultTheme({
     navbar: [
       {
+        text: "工具",
+        prefix: "tools",
+        children: [
+          { text: "git", link: "/tools/git" },
+          { text: "linux", link: "/tools/linux" },
+        ],
+      },
+      {
         text: "前端语言",
         children: [
           { text: "javascript", link: "/fe_lang/javascript" },
@@ -16,14 +24,6 @@ export default defineUserConfig({
           { text: "vue", link: "/fe_lang/vue" },
           { text: "css", link: "/fe_lang/css" },
           { text: "html", link: "/fe_lang/html" },
-        ],
-      },
-      {
-        text: "工具",
-        prefix: "tools",
-        children: [
-          { text: "git", link: "/tools/git" },
-          { text: "linux", link: "/tools/linux" },
         ],
       },
       {

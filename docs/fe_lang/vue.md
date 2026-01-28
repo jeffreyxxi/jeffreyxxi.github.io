@@ -1,6 +1,10 @@
 ---
-prev: /tests
-next: /linux
+prev:
+  text: 面试总结
+  link: /fe_lang/tests
+next:
+  text: CSS 笔记
+  link: /fe_lang/css
 ---
 
 ## vue 笔记整理

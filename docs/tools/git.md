@@ -1,6 +1,8 @@
 ---
 prev: false
-next: /javascript
+next:
+  text: linux 服务器操作
+  link: /tools/linux
 ---
 
 ## git 使用笔记

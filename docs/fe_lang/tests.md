@@ -1,6 +1,10 @@
 ---
-prev: /git
-next: /vue
+prev:
+  text: 开发随笔
+  link: /fe_lang/dev_note
+next:
+  text: Vue 学习
+  link: /fe_lang/vue
 ---
 
 ## javascript

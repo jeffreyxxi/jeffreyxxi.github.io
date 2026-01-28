@@ -1,7 +1,7 @@
 ---
 prev:
-  text: Linux 命令整理
-  link: /tools/linux
+  text: HTML 笔记
+  link: /fe_lang/html
 next: false
 ---
 

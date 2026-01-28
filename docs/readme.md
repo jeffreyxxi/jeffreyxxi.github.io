@@ -15,14 +15,14 @@ tagline: the palest ink is better than the best memory.
 footer: written by jeffrey
 ---
 
-### [工具](/tools/git)
+### 工具
 
 [git 日常使用](/tools/git) / [linux 服务器操作](/tools/linux)
 
-### [前端笔记](/tests/)
+### 前端笔记
 
-整理 javascript 的一下基础知识
+[javascript 笔记](/fe_lang/javascript) / [开发随笔](/fe_lang/dev_note) / [面试总结](/fe_lang/tests) / [Vue 学习](/fe_lang/vue) / [CSS 笔记](/fe_lang/css) / [HTML 笔记](/fe_lang/html)
 
-### [面试整理](/tests/)
+### 股票兴趣
 
-记录一些面试题目,方便自己也方便他人
+[股票兴趣](/notes/stock)
