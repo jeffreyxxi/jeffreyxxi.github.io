@@ -1,31 +1,26 @@
 #!/usr/bin/env sh
 
-# 确保脚本抛出遇到的错误
+# 遇到错误时立即退出
 set -e
 
-# 生成静态文件
-yarn build
+# 构建静态文件（使用 pnpm）
+pnpm build
 
 # 进入生成的文件夹
 cd docs/.vuepress/dist
 
-# 如果是发布到自定义域名
+# 如果是发布到自定义域名，在这里写入你的域名，例如：
 # echo 'www.example.com' > CNAME
 
-# 增加git忽略文件
-echo "node_modules" > .gitignore
-
+# 初始化一个临时的 Git 仓库并提交当前构建产物
 git init
 git checkout -b master
-git add .
-git commit -m 'deploy'
+git add -A
+git commit -m "deploy"
 
-# 如果发布到 https://<USERNAME>.github.io
+# 推送到 GitHub Pages 对应的仓库和分支
+# 当前配置：仓库 jeffreyxxi/jeffreyxxi.git 的 master 分支
 git push -f git@github.com:jeffreyxxi/jeffreyxxi.git master
 
-# 如果发布到 https://<USERNAME>.github.io/<REPO>
-# git remote add origin git@github.com:huabingtao/vuepress-starter.git
-# git branch -M main
-# git push -f git@github.com:huabingtao/vuepress-starter.git main:gh-pages
-
-cd -
+# 返回原始目录
+cd - >/dev/null 2>&1
