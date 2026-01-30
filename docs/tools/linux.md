@@ -115,3 +115,252 @@ unzip -P 密码 archive.zip
 unzip archive.zip -x "*.log"
 
 ```
+
+## 实例：闲置ecs部署代理转发agent
+
+### 操作步骤
+
+这份文档是为您量身定制的**低配 ECS 搭建 AI 助手与 Coding Agent 实战计划**。
+
+该方案采用了 **API 转发模式**，将繁重的计算压力转移至外部大模型服务商（如 DeepSeek），您的 ECS 仅作为轻量级的管理和界面展示平台，**1核1G 或 2核2G 即可流畅运行**。
+
+---
+
+# 🚀 实战计划：基于低配 ECS 的私有 AI 助手与编程 Agent
+
+**目标**：利用闲置 ECS 搭建带图形界面的 AI 对话助手，并配置 VS Code 编程助手。
+**核心架构**：
+
+- **服务端 (ECS)**：Docker + Open WebUI (界面 & 知识库管理) -> 连接外部 API。
+- **客户端 (本地)**：VS Code + Continue 插件 -> 连接外部 API。
+- **计算端**：外部商业大模型 API (DeepSeek/阿里通义/Moonshot)。
+
+---
+
+## 📅 第一阶段：准备工作
+
+### 1.1 硬件与系统检查
+
+- **ECS 配置**：确认已安装 Linux 系统（推荐 Ubuntu 20.04/22.04 LTS 或 Debian 11/12）。
+- **网络**：需拥有公网 IP。
+- **SSH 工具**：本地终端或 Putty/Xshell 可连接服务器。
+
+### 1.2 获取“大脑” (API Key)
+
+这是整个系统的核心智力来源。推荐 **DeepSeek**（代码能力强，价格极低）。
+
+- **注册**：访问 [DeepSeek 开放平台](https://platform.deepseek.com/)。
+- **申请**：创建 API Key（以 `sk-` 开头）。
+- **记录**：
+  - **API Key**: `sk-xxxxxxxxxxxxxxxx`
+  - **Base URL**: `https://api.deepseek.com` (注意不要带 `/v1`，Open WebUI 通常会自动处理，或者根据提示调整)
+
+---
+
+## 🛠 第二阶段：ECS 服务端部署 (Open WebUI)
+
+### 2.1 基础环境配置 (Docker)
+
+SSH 登录 ECS，按顺序执行以下命令：
+
+```bash
+# 1. 更新系统软件包
+sudo apt update && sudo apt upgrade -y
+
+# 2. 增加虚拟内存 (SWAP) - 【关键步骤】
+# 低配机器必须加 Swap，防止内存突发占用导致死机
+sudo fallocate -l 4G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+
+# 3. 安装 Docker 环境
+curl -fsSL https://get.docker.com | bash
+
+# 4. 设置 Docker 开机自启
+sudo systemctl enable --now docker
+```
+
+### 2.2 部署 Open WebUI
+
+运行轻量级 Web 界面容器：
+
+```bash
+# 启动容器
+# -v open-webui: 数据持久化，防止重启丢失聊天记录
+# -p 3000:8080: 端口映射
+docker run -d \
+  -p 3000:8080 \
+  -v open-webui:/app/backend/data \
+  --name open-webui \
+  --restart always \
+  ghcr.io/open-webui/open-webui:main
+```
+
+### 2.3 网络放行
+
+前往云服务商（阿里云/腾讯云/华为云）的 **控制台 -> 安全组/防火墙**：
+
+- **添加规则**：协议 TCP，端口 `3000`，授权对象 `0.0.0.0/0`。
+
+---
+
+## ⚙️ 第三阶段：配置“大脑”连接
+
+### 3.1 初始化管理员
+
+1.  浏览器访问 `http://<你的ECS公网IP>:3000`。
+2.  点击 **Sign Up**，注册第一个账号（系统自动赋予管理员权限）。
+
+### 3.2 绑定外部 API
+
+1.  进入 **Settings (设置)** -> **Connections (连接)**。
+2.  找到 **OpenAI API** 部分（国内模型大多兼容 OpenAI 协议）。
+3.  填写信息：
+    - **Base URL**: `https://api.deepseek.com/v1` (注：DeepSeek 官方建议加上 v1)
+    - **API Key**: 粘贴你的 `sk-xxxx` 密钥。
+4.  点击右侧刷新/保存按钮，系统会显示 "Verified"。
+5.  在 **Settings -> Models** 中，确保 `deepseek-chat` 或 `deepseek-coder` 已被拉取。
+
+### 3.3 【重要】低配机 RAG 优化 (防止爆内存)
+
+Open WebUI 默认会在本地运行一个嵌入模型用于文档分析，这会占用约 500MB-1G 内存。
+
+- **操作**：进入 **Settings -> Models -> Embedding Models**。
+- **修改**：将引擎从 `Default (SentenceTransformers)` 改为 **OpenAI** (或者直接关闭)。
+- **填入**：如果 DeepSeek 不支持 Embedding，可申请 **SiliconFlow (硅基流动)** 的免费 Embedding API 填入此处，或者直接留空暂时停用文档分析功能，以保稳定。
+
+---
+
+## 💻 第四阶段：配置本地 Coding Agent (VS Code)
+
+为了降低延迟，代码助手建议**直连 API**，而不经过 ECS 转发。
+
+### 4.1 安装插件
+
+- 打开 VS Code -> 扩展市场 -> 搜索并安装 **Continue**。
+
+### 4.2 配置文件修改
+
+1.  点击 VS Code 左侧 Continue 图标。
+2.  点击底部齿轮 ⚙️ 打开 `config.json`。
+3.  覆盖或修改 `models` 配置段：
+
+```json
+{
+  "models": [
+    {
+      "title": "DeepSeek Coder",
+      "provider": "openai",
+      "model": "deepseek-coder",
+      "apiKey": "你的_sk_密钥",
+      "apiBase": "https://api.deepseek.com/v1",
+      "contextLength": 8192
+    }
+  ],
+  "tabAutocompleteModel": {
+    "title": "DeepSeek Autocomplete",
+    "provider": "deepseek",
+    "model": "deepseek-coder",
+    "apiKey": "你的_sk_密钥",
+    "apiBase": "https://api.deepseek.com/v1"
+  },
+  "allowAnonymousTelemetry": false
+}
+```
+
+---
+
+## 🛡 第五阶段：安全与收尾 (可选但推荐)
+
+直接暴露 3000 端口既不美观也不安全。
+
+### 5.1 安装 Nginx 反向代理
+
+```bash
+sudo apt install nginx -y
+```
+
+### 5.2 配置端口转发 (让 80 端口指向 3000)
+
+编辑配置文件：`sudo nano /etc/nginx/sites-available/default`
+修改 `location /` 部分：
+
+```nginx
+server {
+    listen 80;
+    server_name _;  # 或者填你的域名
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+重启 Nginx：`sudo systemctl restart nginx`
+_现在你可以直接访问 `http://<IP地址>` 而不需要输 `:3000` 了。_
+
+---
+
+## ✅ 最终核对清单 (Checklist)
+
+1.  [ ] ECS 上 `docker ps` 显示 `open-webui` 状态为 Up。
+2.  [ ] 浏览器能打开 WebUI，且能与 DeepSeek 对话。
+3.  [ ] ECS 内存占用正常 (使用 `htop` 查看，通常应在 500MB-800MB 左右)。
+4.  [ ] 本地 VS Code 按 `Ctrl+L` 能唤起助手，按 `Tab` 能自动补全代码。
+
+**祝你的 AI 助手搭建顺利！**
+
+## 实际操作步骤
+
+### 1.ecs重装
+
+1. 重装后尝试ssh登录连接时报错
+
+```
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+It is also possible that a host key has just been changed.
+The fingerprint for the ED25519 key sent by the remote host is
+SHA256:+ztsGptILcvB91XaHbcU9YGeyviAY0+QeArWZd1Kd2U.
+Please contact your system administrator.
+Add correct host key in C:\\Users\\jiupi/.ssh/known_hosts to get rid of this message.
+Offending ECDSA key in C:\\Users\\jiupi/.ssh/known_hosts:6
+Host key for 101.126.135.123 has changed and you have requested strict checking.
+Host key verification failed.
+
+```
+
+- 报错原因：是ssh第一登录一台机器时会自动存储服务器指纹Host Key，重装过后IP没变，但是服务器生成了新的指纹，所以报错。
+
+- 解决办法：
+
+```
+ssh-keygen -R 101.126.135.123
+```
+
+- -R 意思是 Remove（移除），表示自动找到你的 known_hosts 文件并删除该 IP 对应的旧记录
+
+2. 创建deepseek API Key
+
+- 账号信息：
+  - deepseek账号：1600793739@qq.com
+  - 密码：Jeffreyxxi0525
+  - API Name: JeffreyTranserAgent
+  - API Key: sk-bfaa55e8b963448cb50799f06a2753df
+
+- 账号信息
+  - kimi：微信登录
+  - 密码：
+  - API Name：JeffreyTransferAgentKimi
+  - API Key：sk-5N1JApuIgYpXpd60FFHEy8SR8VripNCp4hhOnxyonZpO6tfS
