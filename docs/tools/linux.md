@@ -9,7 +9,7 @@ next:
 
 ## Linux 命令整理
 
-### scp命令
+### scp 命令
 
 #### Linux scp 命令用于 Linux 之间复制文件和目录。
 
@@ -64,7 +64,7 @@ sudo systemctl reload nginx #重新加载
 sudo systemctl stop nginx #停止ng
 ```
 
-### nano操作
+### nano 操作
 
 ```bash
 nano file_name.file
@@ -72,7 +72,7 @@ nano file_name.file
 
 ### 文件移动
 
-mv命令不仅可以用于重命名文件或目录，还可以用于移动它们。使用mv命令重命名的基本语法非常简单.
+mv 命令不仅可以用于重命名文件或目录，还可以用于移动它们。使用 mv 命令重命名的基本语法非常简单.
 
 ```bash
 mv 原文件名 新文件名
@@ -116,13 +116,13 @@ unzip archive.zip -x "*.log"
 
 ```
 
-## 实例：闲置ecs部署代理转发agent
+## 实例：闲置 ecs 部署代理转发 agent
 
 ### 操作步骤
 
 这份文档是为您量身定制的**低配 ECS 搭建 AI 助手与 Coding Agent 实战计划**。
 
-该方案采用了 **API 转发模式**，将繁重的计算压力转移至外部大模型服务商（如 DeepSeek），您的 ECS 仅作为轻量级的管理和界面展示平台，**1核1G 或 2核2G 即可流畅运行**。
+该方案采用了 **API 转发模式**，将繁重的计算压力转移至外部大模型服务商（如 DeepSeek），您的 ECS 仅作为轻量级的管理和界面展示平台，**1 核 1G 或 2 核 2G 即可流畅运行**。
 
 ---
 
@@ -319,9 +319,9 @@ _现在你可以直接访问 `http://<IP地址>` 而不需要输 `:3000` 了。_
 
 ## 实际操作步骤
 
-### 1.ecs重装
+### 1.ecs 重装
 
-1. 重装后尝试ssh登录连接时报错
+1. 重装后尝试 ssh 登录连接时报错
 
 ```
 
@@ -341,7 +341,7 @@ Host key verification failed.
 
 ```
 
-- 报错原因：是ssh第一登录一台机器时会自动存储服务器指纹Host Key，重装过后IP没变，但是服务器生成了新的指纹，所以报错。
+- 报错原因：是 ssh 第一登录一台机器时会自动存储服务器指纹 Host Key，重装过后 IP 没变，但是服务器生成了新的指纹，所以报错。
 
 - 解决办法：
 
@@ -351,16 +351,4 @@ ssh-keygen -R 101.126.135.123
 
 - -R 意思是 Remove（移除），表示自动找到你的 known_hosts 文件并删除该 IP 对应的旧记录
 
-2. 创建deepseek API Key
-
-- 账号信息：
-  - deepseek账号：1600793739@qq.com
-  - 密码：Jeffreyxxi0525
-  - API Name: JeffreyTranserAgent
-  - API Key: sk-bfaa55e8b963448cb50799f06a2753df
-
-- 账号信息
-  - kimi：微信登录
-  - 密码：
-  - API Name：JeffreyTransferAgentKimi
-  - API Key：sk-5N1JApuIgYpXpd60FFHEy8SR8VripNCp4hhOnxyonZpO6tfS
+2. 创建 deepseek API Key
