@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="generator" content="VuePress 2.0.0-rc.26" />
+    <style>
+      :root {
+        --vp-c-bg: #fff;
+      }
+
+      [data-theme='dark'] {
+        --vp-c-bg: #1b1b1f;
+      }
+
+      html,
+      body {
+        background-color: var(--vp-c-bg);
+      }
+    </style>
+    <script>
+      const useChoice = localStorage.getItem('vuepress-color-scheme')
+      const systemStatus =
+        'matchMedia' in window
+          ? window.matchMedia('(prefers-color-scheme: dark)').matches
+          : false
+
+      if (useChoice === 'light') {
+        document.documentElement.dataset.theme = 'light'
+      } else if (useChoice === 'dark' || systemStatus) {
+        document.documentElement.dataset.theme = 'dark'
+      }
+    </script>
+    <title>jeffrey's notes</title><meta name="description" content="">
+    <link rel="preload" href="/assets/style-BKPcMFbD.css" as="style"><link rel="stylesheet" href="/assets/style-BKPcMFbD.css">
+    <link rel="modulepreload" href="/assets/app-CzxXQkrq.js"><link rel="modulepreload" href="/assets/404.html-DSnjK6U4.js">
+    <link rel="prefetch" href="/assets/index.html-TyZYsg6Q.js" as="script"><link rel="prefetch" href="/assets/css.html-ISpsTqRO.js" as="script"><link rel="prefetch" href="/assets/dev_note.html-c0vp7j8T.js" as="script"><link rel="prefetch" href="/assets/html.html-DldQmyHG.js" as="script"><link rel="prefetch" href="/assets/javascript.html-drtr-0ap.js" as="script"><link rel="prefetch" href="/assets/tests.html-XyaixMlk.js" as="script"><link rel="prefetch" href="/assets/vue.html-BQ8bHXQv.js" as="script"><link rel="prefetch" href="/assets/stock.html-nf_DOhNL.js" as="script"><link rel="prefetch" href="/assets/git.html-HO0Zp4pQ.js" as="script"><link rel="prefetch" href="/assets/linux.html-DNRzchEX.js" as="script">
+  </head>
+  <body>
+    <div id="app"><!--[--><div class="vp-theme-container" vp-container data-v-1eb8c39a><main class="page" data-v-1eb8c39a><div vp-content data-v-1eb8c39a><h1 data-v-1eb8c39a>404</h1><blockquote data-v-1eb8c39a>There&#39;s nothing here.</blockquote><a class="route-link" href="/" data-v-1eb8c39a>Take me home</a></div></main></div><!--[--><!----><!--]--><!--]--></div>
+    <script type="module" src="/assets/app-CzxXQkrq.js" defer></script>
+  </body>
+</html>
