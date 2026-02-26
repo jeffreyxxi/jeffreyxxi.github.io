@@ -20,7 +20,7 @@ git commit -m "deploy"
 
 # 推送到 GitHub Pages 对应的仓库和分支
 # 当前配置：仓库 jeffreyxxi/jeffreyxxi.git 的 master 分支
-git push -f git@github.com:jeffreyxxi/jeffreyxxi.git master
+git push -f https://github.com/jeffreyxxi/jeffreyxxi.github.io.git master
 
 # 返回原始目录
 cd - >/dev/null 2>&1
