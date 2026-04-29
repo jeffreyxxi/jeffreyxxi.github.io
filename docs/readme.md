@@ -17,7 +17,11 @@ footer: written by jeffrey
 
 ### 工具
 
-[git 日常使用](/tools/git) / [linux 服务器操作](/tools/linux) / [AI 工具链与大模型](/tools/ai)
+[git 日常使用](/tools/git) / [linux 服务器操作](/tools/linux)
+
+### AI 学习
+
+[AI 学习与实践](/ai/) / [AI Agent 工具链](/ai/agent-tools) / [AI 模型搭配与选型](/ai/model-selection) / [AI 自动化实践计划](/ai/practice-plan)
 
 ### 前端笔记
 

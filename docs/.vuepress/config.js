@@ -16,6 +16,17 @@ export default defineUserConfig({
         ],
       },
       {
+        text: "AI",
+        prefix: "ai",
+        children: [
+          { text: "总览", link: "/ai/" },
+          { text: "工具链", link: "/ai/agent-tools" },
+          { text: "模型搭配与选型", link: "/ai/model-selection" },
+          { text: "实践计划和记录", link: "/ai/practice-plan" },
+          { text: "官方资料入口", link: "/ai/references" },
+        ],
+      },
+      {
         text: "前端语言",
         children: [
           { text: "javascript", link: "/fe_lang/javascript" },
