@@ -17,7 +17,7 @@ footer: written by jeffrey
 
 ### 工具
 
-[git 日常使用](/tools/git) / [linux 服务器操作](/tools/linux)
+[git 日常使用](/tools/git) / [linux 服务器操作](/tools/linux) / [AI 工具链与大模型](/tools/ai)
 
 ### 前端笔记
 
