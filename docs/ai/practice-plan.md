@@ -11,7 +11,7 @@ next:
 
 ## 说明
 
-- 信息更新时间：`2026-04-30`
+- 信息更新时间：`2026-05-07`
 - 本页只保留真实实践计划与执行记录，不再单独展开“当前目标”“选型判断”“阶段路线”之类的说明性内容
 - 从第二个二级标题开始，每一个二级标题都代表一个独立实践计划，内部统一按“实施步骤 + 执行记录”维护
 - 后续如果开始新的实践，只需要继续在本文后面新增新的二级标题即可
@@ -31,6 +31,7 @@ next:
 - `OpenClaw`：跑在 `Docker` 容器里，负责 Telegram 等消息入口
 - `Hermes`：跑在宿主机，开启 `OpenAI-compatible API Server`
 - `notes` 仓库：放在宿主机固定目录 `/data/repos/notes`
+- `notes` 分支约定：`source` 是源码分支，`master` 是构建产物分支，`main` 已废弃
 - 胶水层：在 `OpenClaw` 工作区里放一个本地脚本，收到任务后调用 `Hermes API`
 - 账号策略：`root` 只负责初始化安装，后续长期运行统一使用普通用户 `agent`
 - 工具链策略：`Node.js` 和 `pnpm` 统一通过 `Volta` 安装和管理
@@ -373,8 +374,9 @@ git config --global user.name "你的 GitHub 用户名或常用名称"
 # 配置提交时显示的邮箱
 git config --global user.email "你的 GitHub 邮箱"
 
-# 建议把默认分支名设成 main，和大多数远端仓库保持一致
-git config --global init.defaultBranch main
+# 设置 Git 默认初始化分支名
+# 这里只影响你本机以后新建仓库时的默认分支名，不影响已存在仓库
+git config --global init.defaultBranch source
 
 # 建议让 pull 默认走 merge，避免新手阶段因为 rebase 产生额外理解成本
 git config --global pull.rebase false
@@ -511,14 +513,14 @@ git branch -vv
 git log --oneline -n 3
 ```
 
-- 如果远端默认分支不是 `main`，可以继续执行：
+- 如果远端默认分支不是当前想要使用的源码分支，可以继续执行：
 
 ```bash
 # 查看远端所有分支
 git branch -r
 
-# 如果需要切到指定分支，例如 master 或 dev
-git checkout master
+# 当前 notes 仓库的源码分支是 source
+git checkout source
 ```
 
 - 补充说明：
@@ -619,23 +621,46 @@ cd /data/repos/notes
 # 看看本地有没有未提交改动
 git status
 
-# 拉取远端最新提交
-git pull origin main
+# 拉取源码分支最新提交
+git pull origin source
 ```
 
-- 如果你平时实际用的是 `master` 或 `dev` 分支，就把最后一行改成对应分支名。
+- 当前仓库分支说明：
+
+```text
+1. source：源码分支，存放 Markdown、Skill、VuePress 配置等源文件
+2. master：构建产物分支，主要用于 GitHub Pages 静态文件发布
+3. main：已废弃，不再作为日常开发分支使用
+```
+
 - 如果服务器以后主要只做自动化执行，建议形成固定习惯：每次 `git pull` 前先 `git status`，避免本地临时改动和远端更新打架。
 - 执行记录：
-- 执行时间：
+- 执行时间：`2026-05-02`
 - 实际命令：
+
+```bash
+git clone <your-notes-repo-url> /data/repos/notes
+cd /data/repos/notes
+git status
+pnpm build
+```
+
 - 实际结果：
-- 遇到的问题：
-- 处理结果：
-- 当前状态：`未执行`
+
+```text
+1. 仓库已成功落到 /data/repos/notes
+2. 当前所在分支为 source，且与 origin/source 保持同步
+3. node_modules 已安装完成
+4. pnpm build 构建成功
+```
+
+- 遇到的问题：文档原先默认以 `main` 作为源码分支示例，但当前仓库实际使用 `source` 作为源码分支，`master` 只承载构建产物，`main` 已废弃。
+- 处理结果：以服务器上的真实分支结构为准，后续凡是宿主机日常更新、Hermes 改仓库或 OpenClaw 挂载读取源码，都统一基于 `source` 分支。
+- 当前状态：`已完成`
 
 #### 步骤 3：在宿主机安装并启动 Hermes API
 
-- 实施说明：这一层是整个方案的执行核心。`Hermes` 直接跑在宿主机，默认监听 `127.0.0.1:8642`，由它去操作 `/data/repos/notes`，这样改文档、跑构建、执行脚本都不需要绕容器文件系统。因为这台机器已经明确要用 `Volta` 管理 Node，所以这里默认在 `agent` 用户环境下安装 Hermes。
+- 实施说明：这一层是整个方案的执行核心。`Hermes` 直接跑在宿主机，默认监听 `127.0.0.1:8642`，由它去操作 `/data/repos/notes`，这样改文档、跑构建、执行脚本都不需要绕容器文件系统。因为这台机器已经明确要用 `Volta` 管理 Node，所以这里默认在 `agent` 用户环境下安装 Hermes。当前阶段的目标是先把 `Hermes` 主体装好并确认命令可用，不强制立即选定大模型，也不强制立即安装 systemd 服务。
 - 建议命令：
 
 ```bash
@@ -648,20 +673,32 @@ source ~/.bashrc
 # 先创建 Hermes 的数据目录
 mkdir -p "$HERMES_HOME"
 
+# 把 uv / hermes 所在目录加入 PATH，避免安装后命令找不到
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+
 # 使用官方安装脚本安装 Hermes
 curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
 
 # 执行 Hermes 的初始化配置
+# 如果此时还没决定使用哪家模型，provider 选择界面建议选 Leave unchanged
 hermes setup
 
-# 打开 API Server 能力
-hermes config set API_SERVER_ENABLED true
+# 检查 Hermes 命令是否可用
+which hermes
+hermes --version
 
-# 设置 API 鉴权密钥，后面 OpenClaw 调用它时要用
-hermes config set API_SERVER_KEY <your-hermes-api-key>
+# 检查 Gateway 子命令是否可用
+hermes gateway --help
+```
 
-# 先前台启动一次，验证 Hermes 网关能否正常跑起来
-hermes gateway
+- 当前阶段建议：
+
+```bash
+# 如果你还没决定模型提供商，先不要乱填假的 API Key
+# 可以后续再通过 hermes model 或 hermes config edit 重新配置
+hermes model
+hermes config edit
 ```
 
 - 说明：
@@ -670,52 +707,134 @@ hermes gateway
 Hermes API 默认监听：http://127.0.0.1:8642
 OpenAI-compatible base URL：http://127.0.0.1:8642/v1
 HERMES_HOME 推荐固定为：/data/apps/hermes/home
+安装脚本里提示的 ripgrep / ffmpeg 属于可选系统依赖，不是当前阶段阻塞项
+如果安装脚本在 Trying SSH clone... 阶段卡住，优先怀疑服务器访问 GitHub 的 SSH/HTTPS 链路不稳定
 ```
 
 - 生产化建议：
 
 ```bash
-# 切换到 agent 用户
-su - agent
+# 当前不急着安装 systemd，等大模型和 provider 决定后再做更稳
+# 如果后续仍坚持让 root 只负责初始化，也可以改由 root 帮 agent 安装 systemd
 
-# 重新加载环境变量，确保 PATH 和 HERMES_HOME 都存在
-source ~/.bashrc
+# 由 root 为 agent 安装 systemd 服务
+env PATH="/home/agent/.local/bin:$PATH" \
+HERMES_HOME="/data/apps/hermes/home" \
+/home/agent/.local/bin/hermes gateway install --system --run-as-user agent
 
-# 安装 systemd 服务，让 Hermes 可以常驻运行
-sudo env "PATH=$PATH" "HERMES_HOME=$HERMES_HOME" hermes gateway install --system
+# 启动服务
+systemctl daemon-reload
+systemctl enable --now hermes-gateway
+systemctl status hermes-gateway
 
-# 启动 systemd 服务
-sudo env "PATH=$PATH" "HERMES_HOME=$HERMES_HOME" hermes gateway start --system
-
-# 查看服务状态
-sudo env "PATH=$PATH" "HERMES_HOME=$HERMES_HOME" hermes gateway status --system
-
-# 持续观察服务日志
+# 持续观察日志
 journalctl -u hermes-gateway -f
 ```
 
 - 预期结果：宿主机上已有可用的 `Hermes API Server`，后续可以通过 HTTP 请求把任务转发给它。
 - 执行记录：
-- 执行时间：
+- 执行时间：`2026-05-03`
 - 实际命令：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
+which hermes
+hermes --version
+hermes gateway --help
+```
+
 - 实际结果：
+
+```text
+1. Hermes Agent 已成功安装，当前版本为 v0.12.0
+2. HERMES_HOME 已固定到 /data/apps/hermes/home
+3. hermes 命令路径为 /home/agent/.local/bin/hermes
+4. hermes gateway --help 可正常输出，说明 Gateway 子命令已可用
+```
+
 - 遇到的问题：
+
+```text
+1. 安装脚本提示 /home/agent/.local/bin 不在 PATH，需要手动补 PATH
+2. 安装脚本在 Trying SSH clone... 阶段看起来像卡住，本质上更像是访问 GitHub 的 SSH 或 HTTPS 链路较慢
+3. ripgrep 和 ffmpeg 安装阶段触发 sudo，但 agent 用户创建时禁用了密码，因此不能在这一轮里直接通过 sudo 安装可选系统依赖
+4. Hermes setup 里会提示选择 provider，如果此时还没决定模型，不适合随便乱填
+```
+
 - 处理结果：
-- 当前状态：`未执行`
+
+```text
+1. 已确认这几个问题都不阻塞 Hermes 主体安装
+2. 当前先不要求立即选定大模型 provider，建议选择 Leave unchanged，后续再用 hermes model / hermes config edit 调整
+3. 当时先不安装 Hermes 的 systemd 服务，等模型、provider 和网关方案确定后再做生产化配置
+4. ripgrep 和 ffmpeg 后续可由 root 单独安装，不需要因为这一步专门放开 agent 密码登录
+```
+
+- 执行记录补充：
+- 执行时间：`2026-05-07`
+- 实际命令：
+
+```bash
+# 使用 root 安装 systemd 服务，但让 Hermes Gateway 实际以 agent 用户运行
+export HERMES_HOME=/data/apps/hermes/home
+/home/agent/.local/bin/hermes gateway install --system --run-as-user agent
+/home/agent/.local/bin/hermes gateway start --system
+/home/agent/.local/bin/hermes gateway status --system
+
+# 验证 API Server 已监听
+ss -lntp | grep 8642
+
+# 从宿主机本机验证 OpenAI-compatible API
+curl -H "Authorization: Bearer <your-hermes-api-key>" http://127.0.0.1:8642/v1/models
+```
+
+- 实际结果：
+
+```text
+1. hermes-gateway.service 已成功安装为 systemd system service
+2. 服务由 root 安装，但实际以 agent 用户运行
+3. Hermes Gateway 已稳定监听 0.0.0.0:8642
+4. 宿主机本机访问 /v1/models 已成功返回 hermes-agent 模型
+```
+
+- 遇到的问题：
+
+```text
+1. agent 用户直接执行 hermes gateway install 时，因当前 SSH 会话缺少 user systemd / D-Bus 环境，systemctl --user daemon-reload 失败
+2. root 直接执行 hermes gateway install --system 时，Hermes 默认拒绝把服务安装为 root 常驻进程
+```
+
+- 处理结果：
+
+```text
+1. 放弃继续折腾 user service，改为在 VPS 上使用更适合长期运行的 system service
+2. 按 Hermes 提示显式加入 --run-as-user agent，让 systemd 服务由 agent 用户执行
+3. Hermes API Server 已进入可用状态，后续 OpenClaw 统一通过这个入口访问底层模型
+```
+
+- 当前状态：`Hermes Gateway 已以 systemd 常驻，宿主机 API 已可用`
 
 #### 步骤 4：用 Docker 部署 OpenClaw，并给容器保留必要挂载
 
-- 实施说明：这一步不再把 OpenClaw 当作“主要代码执行器”，而是当作消息入口和调度入口。它自己的配置和工作区仍然放在容器挂载目录里，同时按需把宿主机仓库或脚本目录挂进来。
+- 实施说明：这一步不再把 OpenClaw 当作“主要代码执行器”，而是当作消息入口和调度入口。它自己的配置和工作区仍然放在容器挂载目录里，同时按需把宿主机仓库或脚本目录挂进来。当前阶段只要求先把容器、目录挂载和基础运行骨架搭起来，不急着在这一轮里完成消息平台接入和最终模型联调。
 - 建议命令：
 
 ```bash
 # 切换到 agent 用户，后续 OpenClaw 也由它维护
 su - agent
 
+# 确认 Docker 和 Compose 都能正常工作
+docker --version
+docker compose version
+
 # 进入 OpenClaw 部署目录
 cd /data/apps/openclaw
 
-# 克隆 OpenClaw 源码到当前目录
+# 如果目录不是空目录，先检查里面是否已有残留文件
+ls -al
+
+# 用 HTTPS 克隆 OpenClaw 源码到当前目录
+# OpenClaw 仓库是公开仓库，这里优先用 HTTPS，减少 SSH 配置干扰
 git clone https://github.com/openclaw/openclaw.git .
 
 # 创建 OpenClaw 的配置目录和工作区目录
@@ -728,13 +847,19 @@ export OPENCLAW_IMAGE="ghcr.io/openclaw/openclaw:latest"
 export OPENCLAW_CONFIG_DIR="/data/apps/openclaw/data/config"
 
 # 指定 OpenClaw 工作区挂载到宿主机的哪个目录
-export OPENCLAW_WORKSPACE_DIR="/data/apps/openclaw/data/workspace"
+export OPENCLAW_WORKSPACE_DIR="/home/agent/.openclaw/workspace"
 
 # 额外挂载 notes 仓库和 Hermes 目录到容器里，方便 OpenClaw 看到它们
 export OPENCLAW_EXTRA_MOUNTS="/data/repos/notes:/home/node/.openclaw/workspace/mounts/notes:rw,/data/apps/hermes:/home/node/.openclaw/workspace/mounts/hermes:rw"
 
 # 执行 OpenClaw 官方 Docker 初始化脚本
 ./scripts/docker/setup.sh
+
+# 查看容器状态
+docker compose ps
+
+# 查看最近日志，确认容器是否正常起来
+docker compose logs --tail=100
 ```
 
 - 补充说明：
@@ -742,20 +867,435 @@ export OPENCLAW_EXTRA_MOUNTS="/data/repos/notes:/home/node/.openclaw/workspace/m
 ```text
 /home/node/.openclaw/workspace/mounts/notes   -> 宿主机笔记仓库
 /home/node/.openclaw/workspace/mounts/hermes  -> 宿主机 Hermes 目录
+当前挂载进来的 notes 是源码仓库，因此后续让 OpenClaw 检查或触发构建时，应默认基于 source 分支理解项目结构
+如果 git clone 前 /data/apps/openclaw 已经不是空目录，就不要直接 clone 到当前目录，先确认是否已有旧部署残留
+如果 setup.sh 在拉镜像或克隆依赖阶段卡住，优先复用前面的临时代理方案
+如果报错出现在 docker pull ghcr.io 阶段，优先怀疑服务器到 ghcr.io 的 TLS 握手或出站链路问题，而不是 OpenClaw 镜像名本身错误
+当前 shell 里的 http_proxy / https_proxy 不会自动影响 Docker daemon；如果要让 docker pull 走代理，需要给 Docker 服务单独配置代理
+如果预构建镜像始终拉不下来，可去掉 OPENCLAW_IMAGE，让 setup.sh 按 OpenClaw 官方默认流程在本地构建镜像
+```
+
+- 如果预构建镜像拉取超时，可改为本地构建流程：
+
+```bash
+# 取消预构建镜像变量，让 setup.sh 改为本地 build
+unset OPENCLAW_IMAGE
+
+# 再次执行 Docker 初始化脚本
+./scripts/docker/setup.sh
+```
+
+- 本地构建补充说明：
+
+```text
+1. OpenClaw 官方文档当前默认就是“本地 build 镜像”，只有显式设置 OPENCLAW_IMAGE 时才会改成拉 GHCR 预构建镜像
+2. 这台服务器当前内存约 3.7 GiB，满足官方文档里“至少 2 GiB RAM”的最低建议
+3. 本地构建仍然需要访问外部依赖源，但通常能绕开 ghcr.io 这一步
+```
+
+- 如果本地构建继续卡在 `apt-get update`，可先把 Dockerfile 里的 Debian 源切到 `https`：
+
+```bash
+# 进入 OpenClaw 仓库根目录
+cd /data/apps/openclaw
+
+# 备份 Dockerfile
+cp Dockerfile Dockerfile.bak
+
+# 把 Debian APT 源从 http 改成 https
+sed -i 's|http://deb.debian.org|https://deb.debian.org|g; s|http://security.debian.org|https://security.debian.org|g' Dockerfile
+
+# 确认替换结果
+grep -n "deb.debian.org\\|security.debian.org" Dockerfile
+
+# 重新执行构建
+./scripts/docker/setup.sh
+```
+
+- 这一步为什么值得优先尝试：
+
+```text
+1. 当前日志里失败的是容器构建阶段访问 http://deb.debian.org:80，而不是 Docker Hub 拉基础镜像
+2. Docker 官方文档说明：daemon 代理解决的是镜像拉取与 registry 访问；构建阶段 RUN 里的 apt/curl 是否走代理，还取决于 build 时是否把代理环境传进容器
+3. Debian 官方文档也给出了 https://deb.debian.org 的 sources.list 示例，因此切到 https 属于合理兼容调整
+4. 这条改动只影响当前这份本地 OpenClaw Dockerfile，不会改宿主机系统 APT 配置
+```
+
+- 如果你后续想走更完整的代理方案：
+
+```text
+1. 先给 Docker daemon 配代理，解决 ghcr.io / registry-1.docker.io / auth.docker.io
+2. 再给 docker build 配置 build-time proxy，让 RUN 阶段里的 apt/curl 也能走代理
+3. 但这一条前提是：代理地址必须能被构建容器访问，不能直接写宿主机的 127.0.0.1
+```
+
+- 如果 `setup.sh` 没有自动把容器拉起来，可手动继续 Compose 启动：
+
+```bash
+# 查看 compose 里定义了哪些服务
+docker compose config --services
+
+# 直接启动 OpenClaw 服务
+docker compose up -d
+
+# 查看容器状态
+docker compose ps
+
+# 查看最近日志
+docker compose logs --tail=100
+```
+
+- 当前阶段最值得关注的日志特征：
+
+```text
+1. openclaw-cli 能起来，说明本地镜像和 compose 结构基本成立
+2. openclaw-gateway 如果提示 Missing config，说明当前不是镜像构建问题，而是 OpenClaw 本身还没完成配置
+3. 看到 “Gateway: not reachable at ws://127.0.0.1:18789” 往往只是 gateway 配置未完成后的连带表现
+```
+
+- 下一步配置方向：
+
+```bash
+# 进入 OpenClaw CLI 容器
+docker compose exec openclaw-cli sh
+
+# 在容器内完成 OpenClaw 初始化配置
+openclaw setup
+```
+
+- 当前阶段建议：
+
+```text
+1. 先把 OpenClaw 自身的 gateway 配置补齐，让 openclaw-gateway 不再报 Missing config
+2. 这一轮不急着同时接 Telegram、Hermes、最终模型，优先让 gateway 先进入“配置完整、服务可达”的状态
+3. 等 OpenClaw 本身配置稳定后，再做“容器访问宿主机 Hermes API”的联调
+4. openclaw setup 执行完成后会回到容器里的 sh 提示符，界面顶部那句 “Say stop...” 只是产品文案，不是要你在 shell 里输入 stop 命令
+```
+
+- 步骤 4 补充：完成 OpenClaw 基础配置
+
+- 为什么这一步单独拎出来：
+
+```text
+1. 你当前已经完成仓库落盘、镜像构建、compose 启动和 openclaw setup
+2. 当前真正缺的是 OpenClaw 自身配置，而不是 Docker 或网络
+3. 官方 Docker 文档的手动流程里，明确建议先写入 gateway.mode / gateway.bind 等基础配置，再启动 gateway
+```
+
+- 先检查 OpenClaw 容器是否在运行：
+
+```bash
+cd /data/apps/openclaw
+
+# 查看 compose 定义了哪些服务
+docker compose config --services
+
+# 查看服务当前状态
+docker compose ps
+
+# 查看最近日志
+docker compose logs --tail=100
+```
+
+- 当前应看到的关键服务：
+
+```text
+1. openclaw-gateway
+2. openclaw-cli
+```
+
+- 如果容器没起来，先启动：
+
+```bash
+cd /data/apps/openclaw
+
+# 启动全部服务
+docker compose up -d
+
+# 只重启 gateway
+docker compose restart openclaw-gateway
+
+# 只重启 cli
+docker compose restart openclaw-cli
+```
+
+- 如果想在容器内手动执行服务相关命令：
+
+```bash
+# 进入 CLI 容器
+docker compose exec openclaw-cli sh
+
+# 进入 Gateway 容器
+docker compose exec openclaw-gateway sh
+```
+
+- 推荐先做一次配置备份：
+
+```bash
+docker compose exec openclaw-cli sh -lc '
+  mkdir -p ~/.openclaw/backups/manual &&
+  cp -f ~/.openclaw/openclaw.json ~/.openclaw/backups/manual/openclaw.json.$(date +%Y%m%d-%H%M%S) 2>/dev/null || true
+'
+```
+
+- 为什么建议先备份：
+
+```text
+1. 官方当前有 issue 提到 openclaw configure 可能改写 workspace 模板文件
+2. 虽然你当前核心资料在挂载的 notes 仓库里，不在 ~/.openclaw/workspace，但先备份配置仍更稳
+3. 如果后面多次试错 provider / model / channel，回退会更方便
+```
+
+- 先补最小可用 gateway 配置：
+
+```bash
+cd /data/apps/openclaw
+
+docker compose run --rm --no-deps --entrypoint node openclaw-gateway \
+  dist/index.js config set --batch-json '[{"path":"gateway.mode","value":"local"},{"path":"gateway.bind","value":"lan"},{"path":"gateway.controlUi.allowedOrigins","value":["http://localhost:18789","http://127.0.0.1:18789"]}]'
+```
+
+- 这样做的原因：
+
+```text
+1. 官方 Docker 文档当前给出的手动流程就是先写这几项
+2. 你前面日志已经出现 Missing config，所以不要只依赖 configure 向导“自动补全”
+3. local + lan 是当前 VPS + Docker 场景下最稳的起步方式
+```
+
+- 写完后重启并检查：
+
+```bash
+cd /data/apps/openclaw
+
+docker compose restart openclaw-gateway openclaw-cli
+sleep 5
+docker compose ps
+docker compose logs --tail=100
+
+# 宿主机健康检查
+curl -fsS http://127.0.0.1:18789/healthz
+curl -fsS http://127.0.0.1:18789/readyz
+```
+
+- 如果上面通过，再进入配置向导：
+
+```bash
+cd /data/apps/openclaw
+docker compose exec openclaw-cli sh
+openclaw configure
+```
+
+- 当前阶段的推荐配置思路：
+
+```text
+1. Gateway：
+   - mode：local
+   - bind：lan
+   - allowedOrigins：保留 localhost 和 127.0.0.1
+2. Model：
+   - 如果你还没决定最终模型，主模型先选 Skip for now 或暂不配置
+   - fallback 也先留空，不要随便填一个不存在的模型
+3. Channel：
+   - 这一轮先不急着接 Telegram / WhatsApp / Discord
+   - 先让本地 Gateway 和 Control UI 状态稳定
+4. Plugins / Skills：
+   - 先保守，能跳过的先跳过
+   - 不要一上来同时开很多插件，避免排障面变大
+5. Workspace：
+   - 核心业务仓库仍然是 /data/repos/notes
+   - ~/.openclaw/workspace 只当 OpenClaw 自己的工作区，不要把它当文档主仓库
+```
+
+- 配置完成后，建议立刻检查当前配置：
+
+```bash
+docker compose exec openclaw-cli sh -lc '
+  openclaw config get gateway.mode &&
+  openclaw config get gateway.bind
+'
+
+docker compose exec openclaw-cli sh -lc '
+  cat ~/.openclaw/openclaw.json
+'
+```
+
+- 当前阶段特别提醒：
+
+```text
+1. 官方 issue 显示：openclaw configure 在“跳过 fallback”时，旧的 fallback 配置可能不会自动删除
+2. 如果你之前试过模型 provider，配置完成后最好手动检查 ~/.openclaw/openclaw.json 里是否还残留 models.fallback
+3. 如果 Gateway 仍提示 mode 缺失，不要继续在向导里来回点，优先直接用 openclaw config set 或上面的 batch-json 命令修正
+```
+
+- 这一轮配置完成的判断标准：
+
+```text
+1. docker compose ps 里 openclaw-gateway / openclaw-cli 都处于 Up
+2. openclaw-gateway 日志里不再反复出现 Missing config
+3. curl http://127.0.0.1:18789/healthz 和 /readyz 可以正常返回
+4. openclaw-cli 不再提示 Config missing / Gateway not reachable
+5. openclaw.json 已明确包含 gateway.mode=local 和 gateway.bind=lan
 ```
 
 - 预期结果：`OpenClaw` 容器正常启动，工作区里可看到挂载进来的仓库和脚本目录。
 - 执行记录：
-- 执行时间：
+- 执行时间：`2026-05-03`
 - 实际命令：
+
+```bash
+git clone https://github.com/openclaw/openclaw.git .
+./scripts/docker/setup.sh
+```
+
 - 实际结果：
+
+```text
+1. git clone 过程中出现 HTTP 408 超时，说明服务器访问 GitHub 仓库数据时链路不稳定
+2. 执行 setup.sh 后，脚本尝试拉取 ghcr.io/openclaw/openclaw:latest
+3. docker pull 阶段报 TLS handshake timeout，导致预构建镜像没有拉取成功
+```
+
 - 遇到的问题：
+
+```text
+1. git clone https://github.com/openclaw/openclaw.git . 返回 RPC failed / HTTP 408 / shallow-info 读取失败
+2. setup.sh 在 Pulling Docker image: ghcr.io/openclaw/openclaw:latest 阶段报错：
+   failed to do request: Head "https://ghcr.io/v2/openclaw/openclaw/manifests/latest": net/http: TLS handshake timeout
+3. 这类报错更像服务器访问 GitHub / GHCR 的网络超时，而不是镜像标签本身错误或权限不足
+```
+
 - 处理结果：
-- 当前状态：`未执行`
+
+```text
+1. 先确认这属于网络链路问题，不是 OpenClaw 镜像名写错
+2. 当前优先考虑两条处理路径：
+   - 给 Docker daemon 单独配置代理，再继续拉 ghcr.io 预构建镜像
+   - 取消 OPENCLAW_IMAGE，改走 OpenClaw 官方默认的本地构建镜像流程
+3. 在未完成其中一条处理路径前，暂不继续判断 OpenClaw 容器本身的启动问题
+```
+
+- 追加执行记录：
+- 执行时间：`2026-05-04`
+- 实际命令：
+
+```bash
+./scripts/docker/setup.sh
+```
+
+- 实际结果：
+
+```text
+1. 本地构建已能成功拉取 Dockerfile frontend 和 node / bun 基础镜像元数据
+2. 失败点已推进到 Dockerfile 运行阶段的 apt-get update
+3. 具体报错为容器内访问 http://deb.debian.org/debian 和 http://deb.debian.org/debian-security 超时
+4. 因为 apt 索引未更新成功，后续 ca-certificates、curl、git、python3 等包都显示无法定位
+```
+
+- 遇到的问题：
+
+```text
+1. 当前失败点不再是 ghcr.io，也不再是 Docker Hub token 鉴权
+2. 现在是构建容器内部直接访问 Debian APT HTTP 源超时
+3. 说明“Docker daemon 能联网”和“Docker build 里的 RUN 命令能顺利用宿主机网络访问 APT 源”仍然是两层不同问题
+```
+
+- 处理结果：
+
+```text
+1. 当前优先尝试把 Dockerfile 里的 Debian 源从 http 切到 https，再重新构建
+2. 如果切到 https 后仍失败，再继续补 Docker build 的代理配置，而不只是 Docker daemon 代理
+```
+
+- 追加执行记录：
+- 执行时间：`2026-05-04`
+- 实际命令：
+
+```bash
+docker build --network host \
+  --build-arg http_proxy=http://127.0.0.1:7890 \
+  --build-arg https_proxy=http://127.0.0.1:7890 \
+  --build-arg HTTP_PROXY=http://127.0.0.1:7890 \
+  --build-arg HTTPS_PROXY=http://127.0.0.1:7890 \
+  --build-arg no_proxy=localhost,127.0.0.1,::1 \
+  --build-arg NO_PROXY=localhost,127.0.0.1,::1 \
+  -t openclaw:local .
+
+docker compose config --services
+docker compose up -d
+docker compose ps
+docker compose logs --tail=100
+```
+
+- 实际结果：
+
+```text
+1. openclaw:local 本地镜像已成功构建完成
+2. docker compose 当前定义了两个服务：openclaw-gateway、openclaw-cli
+3. 通过 docker compose up -d 已成功启动两个容器
+4. 当前容器状态：
+   - openclaw-cli：Up（health: starting）
+   - openclaw-gateway：Up（health: starting），并暴露 18789-18790 端口
+5. openclaw-cli 日志显示本地会话已起来，但提示当前 Config missing、Gateway not reachable
+6. openclaw-gateway 日志反复提示：
+   Missing config. Run `openclaw setup` or set gateway.mode=local (or pass --allow-unconfigured).
+```
+
+- 遇到的问题：
+
+```text
+1. 当前阻塞点已经不再是仓库克隆、镜像构建或容器启动
+2. 现在的核心问题是 OpenClaw 自身配置尚未完成，导致 gateway 进程无法正常进入可用状态
+3. CLI 容器能起来但提示 gateway 不可达，本质上是 gateway 配置缺失后的连带表现
+```
+
+- 处理结果：
+
+```text
+1. 已确认 Docker 镜像、compose 服务和容器骨架都已经搭起来
+2. 当前下一步不再是继续排构建问题，而是进入 OpenClaw 自身初始化配置阶段
+3. 后续优先在 openclaw-cli 容器内执行 openclaw setup，先把 gateway 的基础配置补齐
+```
+
+- 追加执行记录：
+- 执行时间：`2026-05-04`
+- 实际命令：
+
+```bash
+docker compose exec openclaw-cli sh
+openclaw setup
+```
+
+- 实际结果：
+
+```text
+1. openclaw setup 已成功执行
+2. 已写入 ~/.openclaw/openclaw.json
+3. Workspace 与 Sessions 目录检查通过
+4. CLI 明确提示：Next: run openclaw configure to choose models, channels, Gateway, plugins, skills, and health checks.
+```
+
+- 遇到的问题：
+
+```text
+1. setup 完成后回到了容器内的 sh 提示符
+2. 界面顶部出现 “Say "stop" and I'll stop...” 这类产品文案，容易误以为需要在 shell 里输入 stop
+3. 实际上 stop 只是文案，不是当前 shell 可执行命令，所以输入 Stop / stop 都会得到 sh: not found
+```
+
+- 处理结果：
+
+```text
+1. 已确认这不是报错，也不是 OpenClaw 卡住
+2. 当前说明 OpenClaw 的基础目录初始化已经完成
+3. 下一步应执行 openclaw configure，而不是在 sh 里输入 stop
+```
+
+- 当前状态：`基础初始化已完成，待进入 OpenClaw 配置阶段`
 
 #### 步骤 5：让 OpenClaw 容器能访问宿主机上的 Hermes API
 
-- 实施说明：这是这套架构的关键连接点。`Hermes API` 默认绑定在宿主机 `127.0.0.1:8642`，容器里的 `localhost` 不是宿主机，所以需要给 OpenClaw 容器一个稳定的宿主机访问入口。单机 Linux 场景下，推荐使用 `host.docker.internal` 映射。
+- 实施说明：这是这套架构的关键连接点。`OpenClaw` 不直接连 `DeepSeek`，而是统一访问宿主机上的 `Hermes OpenAI-compatible API`，由 `Hermes` 再去调用底层真实模型。单机 Linux 场景下，推荐给 `openclaw-gateway` 容器增加 `host.docker.internal` 映射，然后把 Hermes Gateway 的 API Server 监听到宿主机固定端口。
 - 建议文件：
 
 在 `/data/apps/openclaw` 新建 `docker-compose.override.yml`：
@@ -766,10 +1306,21 @@ services:
     # 让网关容器能通过 host.docker.internal 访问宿主机
     extra_hosts:
       - "host.docker.internal:host-gateway"
-  openclaw-cli:
-    # 让 CLI 容器也能通过同样的名字访问宿主机
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+```
+
+- 说明补充：
+
+```text
+1. 当前实测只给 openclaw-gateway 增加 extra_hosts 即可
+2. 不建议给 openclaw-cli 也加这段配置，因为该服务在当前版本下带有 network_mode，和 extra_hosts 会发生冲突
+3. Hermes 侧需要先开启 API Server，并保证以下环境变量已生效：
+   API_SERVER_ENABLED=true
+   API_SERVER_HOST=0.0.0.0
+   API_SERVER_PORT=8642
+   API_SERVER_KEY=<your-hermes-api-key>
+4. Hermes Gateway 当前最终采用 systemd 常驻运行：
+   hermes gateway install --system --run-as-user agent
+   hermes gateway start --system
 ```
 
 - 验证命令：
@@ -782,20 +1333,89 @@ su - agent
 cd /data/apps/openclaw
 
 # 按新的 override 配置重启容器
-docker compose up -d
+docker compose up -d --force-recreate openclaw-gateway
 
-# 在容器里请求 Hermes API，确认网络已经打通
-docker compose exec openclaw-gateway curl -fsS http://host.docker.internal:8642/v1/models
+# 在容器里请求 Hermes API，确认模型列表接口已经打通
+docker compose exec openclaw-gateway curl \
+  -H "Authorization: Bearer <your-hermes-api-key>" \
+  http://host.docker.internal:8642/v1/models
+
+# 再验证一次聊天补全接口
+docker compose exec openclaw-gateway curl \
+  -H "Authorization: Bearer <your-hermes-api-key>" \
+  -H "Content-Type: application/json" \
+  http://host.docker.internal:8642/v1/chat/completions \
+  -d '{
+    "model": "hermes-agent",
+    "messages": [
+      { "role": "user", "content": "请只回复：OpenClaw 到 Hermes 已打通" }
+    ],
+    "stream": false
+  }'
 ```
 
 - 预期结果：容器内部能访问 `Hermes API`，后续 OpenClaw 才能通过脚本把任务转发给 Hermes。
 - 执行记录：
-- 执行时间：
+- 执行时间：`2026-05-06` 至 `2026-05-07`
 - 实际命令：
+
+```bash
+# 初始尝试：给 gateway 和 cli 都加 extra_hosts
+docker compose up -d
+
+# 调整后：只保留 openclaw-gateway 的 extra_hosts，并重建该容器
+docker compose up -d --force-recreate openclaw-gateway
+
+# 宿主机验证 Hermes Gateway API
+ss -lntp | grep 8642
+curl -H "Authorization: Bearer <your-hermes-api-key>" http://127.0.0.1:8642/v1/models
+
+# 容器内验证 models 和 chat/completions
+docker compose exec openclaw-gateway curl \
+  -H "Authorization: Bearer <your-hermes-api-key>" \
+  http://host.docker.internal:8642/v1/models
+
+docker compose exec openclaw-gateway curl \
+  -H "Authorization: Bearer <your-hermes-api-key>" \
+  -H "Content-Type: application/json" \
+  http://host.docker.internal:8642/v1/chat/completions \
+  -d '{
+    "model": "hermes-agent",
+    "messages": [
+      { "role": "user", "content": "请只回复：OpenClaw 到 Hermes 已打通" }
+    ],
+    "stream": false
+  }'
+```
+
 - 实际结果：
+
+```text
+1. 宿主机上的 Hermes Gateway API 已成功监听 0.0.0.0:8642
+2. 宿主机本机访问 /v1/models 成功返回 hermes-agent
+3. openclaw-gateway 容器已可通过 host.docker.internal 访问 /v1/models
+4. openclaw-gateway 容器访问 /v1/chat/completions 成功返回“OpenClaw 到 Hermes 已打通”
+```
+
 - 遇到的问题：
+
+```text
+1. 初始把 extra_hosts 同时加到 openclaw-gateway 和 openclaw-cli 后，openclaw-cli 因 network_mode 与 extra_hosts 冲突，docker compose 启动失败
+2. 早期误以为 hermes-cli 能聊天就代表 API 已启动，后续通过 ss -lntp | grep 8642 才确认宿主机当时并没有监听 8642
+3. 在 /root 目录下执行 docker compose exec 时，因当前目录缺少 docker-compose.yml，报 no configuration file provided: not found
+```
+
 - 处理结果：
-- 当前状态：`未执行`
+
+```text
+1. docker-compose.override.yml 最终只给 openclaw-gateway 添加 host.docker.internal 映射
+2. Hermes 改为通过 gateway systemd 服务常驻，并启用 API_SERVER_ENABLED / API_SERVER_HOST / API_SERVER_PORT / API_SERVER_KEY
+3. OpenClaw 与 Hermes 的最终推荐链路明确为：
+   OpenClaw -> Hermes API -> DeepSeek
+4. OpenClaw 当前应把 Hermes 当成上游 OpenAI-compatible 模型服务使用，不再在 OpenClaw 内重复直连 DeepSeek
+```
+
+- 当前状态：`已完成，容器到宿主机 Hermes API 的访问链路已打通`
 
 #### 步骤 6：在 OpenClaw 工作区里准备一个调用 Hermes API 的脚本
 
@@ -803,7 +1423,7 @@ docker compose exec openclaw-gateway curl -fsS http://host.docker.internal:8642/
 - 建议脚本路径：
 
 ```text
-/data/apps/openclaw/data/workspace/scripts/call-hermes.sh
+/home/agent/.openclaw/workspace/scripts/call-hermes.sh
 ```
 
 - 建议脚本内容：
@@ -813,18 +1433,29 @@ docker compose exec openclaw-gateway curl -fsS http://host.docker.internal:8642/
 set -euo pipefail
 
 PROMPT="${1:-}"
+HERMES_BASE_URL="${HERMES_BASE_URL:-http://host.docker.internal:8642/v1}"
 
 if [ -z "$PROMPT" ]; then
   echo "missing prompt"
   exit 1
 fi
 
-curl -sS http://host.docker.internal:8642/v1/responses \
+curl -sS "${HERMES_BASE_URL}/chat/completions" \
   -H "Authorization: Bearer ${HERMES_API_KEY}" \
   -H "Content-Type: application/json" \
   -d "{
     \"model\": \"hermes-agent\",
-    \"input\": \"你现在在 /data/repos/notes 仓库中工作。请根据以下任务执行，并在需要时修改 Markdown、运行 pnpm build、汇总结果：${PROMPT}\"
+    \"messages\": [
+      {
+        \"role\": \"system\",
+        \"content\": \"你现在在 /data/repos/notes 仓库中工作。请根据用户任务执行，并在需要时修改 Markdown、运行 pnpm build、汇总结果。\"
+      },
+      {
+        \"role\": \"user\",
+        \"content\": \"${PROMPT}\"
+      }
+    ],
+    \"stream\": false
   }"
 ```
 
@@ -832,20 +1463,52 @@ curl -sS http://host.docker.internal:8642/v1/responses \
 
 ```bash
 # 创建放脚本的目录
-mkdir -p /data/apps/openclaw/data/workspace/scripts
+mkdir -p /home/agent/.openclaw/workspace/scripts
 
 # 给脚本增加可执行权限
-chmod +x /data/apps/openclaw/data/workspace/scripts/call-hermes.sh
+chmod +x /home/agent/.openclaw/workspace/scripts/call-hermes.sh
 ```
 
 - 预期结果：OpenClaw 侧已经有一个可直接调用的 Hermes 转发脚本。
 - 执行记录：
-- 执行时间：
+- 执行时间：`2026-05-07`
 - 实际命令：
+
+```bash
+# 在宿主机真实挂载源目录下创建脚本
+mkdir -p /home/agent/.openclaw/workspace/scripts
+nano /home/agent/.openclaw/workspace/scripts/call-hermes.sh
+chmod +x /home/agent/.openclaw/workspace/scripts/call-hermes.sh
+
+# 进入容器验证脚本是否可见并执行
+cd /data/apps/openclaw
+docker compose exec openclaw-gateway sh -lc 'cd /home/node/.openclaw/workspace && ./scripts/call-hermes.sh "请只回复：脚本已可执行"'
+```
+
 - 实际结果：
+
+```text
+1. call-hermes.sh 已在 OpenClaw workspace 的真实宿主机目录中创建完成
+2. openclaw-gateway 容器内已经可以看到并执行该脚本
+3. 脚本调用 Hermes /v1/chat/completions 成功返回“脚本已可执行”
+```
+
 - 遇到的问题：
+
+```text
+1. 初始把脚本创建在 /data/apps/openclaw/data/workspace/scripts，但当前部署实际挂载的 workspace 源目录并不是这里
+2. 在宿主机直接执行脚本时，因 host.docker.internal 只在容器中可解析，出现 Could not resolve host: host.docker.internal
+```
+
 - 处理结果：
-- 当前状态：`未执行`
+
+```text
+1. 通过 .env、docker compose config 和 docker inspect 确认当前真实工作区为 /home/agent/.openclaw/workspace
+2. 将脚本改为放在 /home/agent/.openclaw/workspace/scripts，并从 openclaw-gateway 容器内执行
+3. 脚本接口改为当前已验证通过的 /v1/chat/completions，并增加 HERMES_BASE_URL 可配置项
+```
+
+- 当前状态：`已完成，Hermes 转发脚本已可在容器内执行`
 
 #### 步骤 7：验证完整链路是否跑通
 
@@ -860,7 +1523,7 @@ chmod +x /data/apps/openclaw/data/workspace/scripts/call-hermes.sh
 
 ```bash
 # 进入 OpenClaw 工作区
-cd /data/apps/openclaw/data/workspace
+cd /home/agent/.openclaw/workspace
 
 # 调用前面准备好的脚本，把测试任务转发给 Hermes
 HERMES_API_KEY=<your-hermes-api-key> ./scripts/call-hermes.sh "请在 /data/repos/notes/docs/ai/practice-plan.md 末尾追加一段“链路测试记录”，然后执行 pnpm build，并返回修改摘要。"
@@ -882,7 +1545,7 @@ pnpm build
 - 实际结果：
 - 遇到的问题：
 - 处理结果：
-- 当前状态：`未执行`
+- 当前状态：`待执行`
 
 #### 步骤 8：再接入 Telegram 和后续自动化
 

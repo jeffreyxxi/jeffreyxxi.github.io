@@ -165,3 +165,219 @@
 - 遇到的问题：无实际阻塞；主要工作是把原先简略的“git clone + build”扩展成更贴合真实服务器初始化阶段的完整步骤
 - 风险与待确认项：文档默认代码托管平台为 `GitHub`，且优先推荐 `SSH` 拉私有仓库；如果用户实际使用的是 `GitLab` 或 Gitee，后续只需把主机名和仓库地址替换即可
 - 下一步建议：按文档先完成 `agent` 用户下的 Git 身份与 SSH 配置，再执行仓库克隆；如果克隆阶段仍遇到网络问题，可继续复用前面“本地 Mac 临时代理”的方案
+
+## 任务日志 - 2026-05-03 10:00:00
+
+- 任务标题：分析 Hermes 安装脚本在宿主机阶段卡住与 sudo 提示问题
+- 任务目标：根据用户提供的 Hermes 官方安装日志，判断 `Trying SSH clone...` 卡住的可能原因，解释 `~/.local/bin` 的 PATH 警告是否需要处理，并评估 `agent` 禁用密码对 `ripgrep`、`ffmpeg` 安装和后续维护的影响
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；以 Hermes 官方仓库和安装脚本为主要依据；本次以分析与建议为主，不直接改动实践文档正文
+- 执行动作：读取 `docs/ai/practice-plan.md` 当前 Hermes 相关步骤；核对 Hermes 官方安装文档和 `scripts/install.sh` 中关于 `uv`、PATH、可选系统依赖、SSH 优先克隆与 HTTPS 回退的实现逻辑；整理适合当前服务器场景的处理建议
+- 结果摘要：已确认安装脚本会优先尝试 SSH 克隆 Hermes 仓库，再回退到 HTTPS；`ripgrep` 和 `ffmpeg` 属于可选系统依赖，不会阻塞 Hermes 主体安装；`~/.local/bin` 不在 PATH 的警告建议处理，否则后续 `uv`、`uvx` 可能不方便直接使用
+- 遇到的问题：官方安装脚本对 SSH 克隆阶段的输出较少，用户看到“卡住”时不容易快速判断是 SSH、HTTPS 还是网络链路问题
+- 风险与待确认项：如果服务器出站访问 `github.com:22` 或 `github.com:443` 不稳定，后续仍可能在仓库克隆或依赖下载阶段继续卡顿；若长期让 `agent` 直接使用 sudo，需额外规划密码策略或 sudoers 策略
+- 下一步建议：优先手动验证 `ssh -T git@github.com`、`git ls-remote git@github.com:NousResearch/hermes-agent.git` 和 `git ls-remote https://github.com/NousResearch/hermes-agent.git`；同时把 `~/.local/bin` 加入 `agent` 的 PATH；`ripgrep`、`ffmpeg` 建议由 root 单独安装，不必为了这一轮安装立刻放开 `agent` 的密码登录
+
+## 任务日志 - 2026-05-03 10:20:00
+
+- 任务标题：确认暂缓 Hermes systemd 后的下一步推进顺序
+- 任务目标：在用户暂不配置大模型、也暂不安装 Hermes systemd 服务的前提下，判断是否应继续安装 OpenClaw，并给出更稳妥的实施顺序
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；不提前要求用户确定最终模型提供商；以“先搭骨架、后补模型配置”的最小闭环为主
+- 执行动作：结合当前实践计划的实施顺序，梳理宿主机侧的最小自检项，评估 OpenClaw 安装与 Hermes 模型配置之间的依赖关系，并整理出下一步建议
+- 结果摘要：当前可以继续安装 OpenClaw，但更稳的顺序是先完成一轮宿主机自检，再部署 OpenClaw 容器与挂载，暂缓 systemd、模型配置和完整链路验证
+- 遇到的问题：无新增阻塞；主要是避免在模型尚未确定时，把 OpenClaw、Hermes、Telegram 和 systemd 多层问题叠加到一起
+- 风险与待确认项：若未先确认 `notes` 仓库能在宿主机构建、`Hermes` 命令可调用、Docker 可用，则后续即使 OpenClaw 容器启动，也难以区分问题出在宿主机还是容器链路
+- 下一步建议：优先完成 `notes` 仓库构建验证、`hermes --version`/`hermes gateway --help` 校验和 Docker 检查；通过后再安装 OpenClaw，并先验证容器启动与目录挂载，不急着接入最终模型
+
+## 任务日志 - 2026-05-03 10:45:00
+
+- 任务标题：根据真实分支结构与当前进度更新实践计划文档
+- 任务目标：将 `docs/ai/practice-plan.md` 中关于 `notes` 仓库分支、Hermes 当前进度和 OpenClaw 下一步安装指引同步为服务器上的真实状态，避免继续沿用过时的 `main` / “立即配置模型 + systemd” 假设
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；以用户当前服务器执行结果为准；尽量保留原有实践计划结构，只做增量修订
+- 执行动作：更新文档顶部信息更新时间；补充 `notes` 仓库真实分支约定；将步骤 2 的拉代码与日常更新命令统一改为 `source` 分支；补写步骤 2 实际执行记录；重写步骤 3 的当前阶段目标、PATH 提醒、provider 暂缓配置建议与实际执行记录；细化步骤 4 的 OpenClaw 安装前提、自检项、HTTPS 克隆方案、挂载说明与当前执行状态
+- 结果摘要：`practice-plan.md` 已和当前服务器实际情况对齐，现可作为下一步安装 OpenClaw 的直接操作文档
+- 遇到的问题：原文中部分示例仍以 `main` 为默认源码分支，且默认要求在 Hermes 安装阶段同步完成模型选择和 systemd 安装，与当前真实进度不一致
+- 风险与待确认项：OpenClaw 的实际 Docker 初始化脚本、镜像标签和 compose 结构后续可能随官方仓库更新而变化，真正执行时仍应以仓库当下脚本输出为准
+- 下一步建议：直接按更新后的步骤 4 在服务器上安装 OpenClaw；如执行中遇到镜像拉取、GitHub 访问或挂载路径异常，再把实际日志继续回填到文档对应执行记录里
+
+## 任务日志 - 2026-05-03 11:05:00
+
+- 任务标题：记录 OpenClaw 克隆与 GHCR 拉镜像超时问题
+- 任务目标：根据用户在安装 OpenClaw 阶段遇到的 `git clone` 超时与 `ghcr.io` TLS 握手超时报错，判断问题性质，并把可继续推进的处理路径同步进实践文档
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；以 OpenClaw 官方仓库当前 Docker 安装流程为准；不把网络问题误判成镜像名或权限问题
+- 执行动作：补写 `practice-plan.md` 步骤 4 的实际执行记录；增加 `docker pull ghcr.io` 超时的原因判断；补充“当前 shell 代理不会自动作用于 Docker daemon”和“取消 OPENCLAW_IMAGE 改走本地 build”的备用路径说明
+- 结果摘要：文档中现已明确：当前阻塞点更偏向服务器访问 GitHub / GHCR 的网络链路问题；并已给出两条可继续推进的方案，即“给 Docker daemon 配代理”或“取消 OPENCLAW_IMAGE 改走本地 build”
+- 遇到的问题：`git clone https://github.com/openclaw/openclaw.git .` 返回 `HTTP 408`；`./scripts/docker/setup.sh` 在拉取 `ghcr.io/openclaw/openclaw:latest` 时返回 `TLS handshake timeout`
+- 风险与待确认项：即使改走本地 build，后续仍可能在下载上游依赖阶段受外网链路影响；但它可以绕开 `ghcr.io` 这一当前最直接的阻塞点
+- 下一步建议：优先尝试取消 `OPENCLAW_IMAGE` 后重新执行 `./scripts/docker/setup.sh`；如果后续仍需走预构建镜像，再单独为 Docker daemon 配代理
+
+## 任务日志 - 2026-05-03 11:20:00
+
+- 任务标题：分析 OpenClaw 本地构建阶段 Docker Hub 鉴权超时问题
+- 任务目标：根据用户在 `./scripts/docker/setup.sh` 本地 build 阶段遇到的 `auth.docker.io` token 获取超时报错，判断其与前面 `registry-1.docker.io` 连通性测试的关系，并明确下一步处理方向
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；不把 Docker Hub 鉴权 token 拉取失败误判为 OpenClaw Dockerfile 本身错误；本次以分析与指导为主
+- 执行动作：分析 BuildKit 输出；结合前面 `curl -4/-6 https://registry-1.docker.io/v2/` 的结果，确认服务器 IPv4 可用、IPv6 不通；判断 BuildKit 当前仍在访问 `auth.docker.io` 的 IPv6 地址，导致匿名 token 获取超时
+- 结果摘要：当前阻塞点已从 `ghcr.io` 切换为 `auth.docker.io`；根因仍是 Docker / BuildKit 外网访问链路问题，且明显夹带 IPv6 出站异常；这不是 OpenClaw 项目代码错误
+- 遇到的问题：本地 build 虽然绕开了 GHCR 预构建镜像，但 Docker 仍需从 Docker Hub 拉 `node`、`bun` 等基础镜像元数据，并向 `auth.docker.io` 请求匿名 token；该请求命中了 IPv6 地址后超时
+- 风险与待确认项：只验证 `registry-1.docker.io` 的 IPv4 可用还不够，后续 Docker Hub 的 token 服务 `auth.docker.io` 也必须稳定可达；若 Docker daemon 仍未稳定走代理，后面还可能继续在基础镜像拉取阶段失败
+- 下一步建议：优先验证 `curl -4/-6 https://auth.docker.io/token?service=registry.docker.io`；更稳的做法是由 root 给 Docker daemon 配代理并重启，再重新执行 `./scripts/docker/setup.sh`
+
+## 任务日志 - 2026-05-04 01:45:00
+
+- 任务标题：同步 OpenClaw 构建成功与容器启动后的最新状态
+- 任务目标：根据用户在云服务器上完成手动 Docker build 和 compose 启动后的实际输出，更新实践计划中步骤 4 的执行进度，并明确当前阻塞点已经从“构建失败”切换为“OpenClaw 配置缺失”
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；以用户云服务器上的真实日志为准；不再继续把当前问题误判成 Docker 构建问题
+- 执行动作：读取用户提供的 `docker build --network host ... -t openclaw:local .`、`docker compose config --services`、`docker compose up -d`、`docker compose ps` 和 `docker compose logs --tail=100` 输出；更新 `practice-plan.md` 步骤 4 的执行记录和下一步建议
+- 结果摘要：当前 OpenClaw 本地镜像 `openclaw:local` 已构建成功，`openclaw-gateway` 和 `openclaw-cli` 两个容器已成功启动；新的核心问题已变成 OpenClaw 缺少配置，gateway 日志提示需要执行 `openclaw setup`
+- 遇到的问题：`openclaw-gateway` 日志持续提示 `Missing config. Run openclaw setup...`；`openclaw-cli` 虽已进入本地会话，但也提示 `Config: missing` 和 `Gateway: not reachable`
+- 风险与待确认项：当前如果过早同时接入 Telegram、Hermes API 和最终模型，容易把 OpenClaw 自身配置问题与后续链路问题叠加；建议先单独完成 OpenClaw 基础配置
+- 下一步建议：进入 `openclaw-cli` 容器执行 `openclaw setup`，先补齐 gateway 基础配置；待 OpenClaw 自身状态稳定后，再继续做容器访问宿主机 Hermes API 的联调
+
+## 任务日志 - 2026-05-04 02:00:00
+
+- 任务标题：确认 OpenClaw setup 已完成并进入 configure 前状态
+- 任务目标：根据用户在 `openclaw-cli` 容器内执行 `openclaw setup` 的结果，确认这一步是否成功，并澄清界面文案与 shell 命令之间的区别
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；以用户容器内真实输出为准；避免把文案误判成可执行命令
+- 执行动作：解析 `openclaw setup` 输出；确认 `~/.openclaw/openclaw.json`、workspace、sessions 目录已生成；将“Say stop...” 识别为产品文案而非 shell 指令；同步更新实践计划文档
+- 结果摘要：`openclaw setup` 已成功执行，当前 OpenClaw 基础目录与本地配置已准备完成；下一步应进入 `openclaw configure`，而不是在容器 shell 中输入 `stop`
+- 遇到的问题：初始化提示语包含 “Say 'stop' and I'll stop” 这类自然语言文案，容易让人误以为当前仍在某种交互式对话模式中
+- 风险与待确认项：后续 `openclaw configure` 会涉及模型、Gateway、插件、技能和健康检查等配置项；若一次性全配，仍可能把基础配置与最终链路目标叠加
+- 下一步建议：继续在 `openclaw-cli` 容器内执行 `openclaw configure`，优先完成最小配置；如界面涉及模型或渠道选择，可继续逐项贴出，我再帮你判断当前该选什么
+
+## 任务日志 - 2026-05-06 10:00:00
+
+- 任务标题：补充 OpenClaw 配置阶段的完整操作指引
+- 任务目标：根据当前已完成的 OpenClaw 安装进度，为用户补充一套可直接照着执行的配置指导，覆盖“如何检查容器是否运行”“如何启动服务”“如何进行配置设置”“当前阶段的推荐配置思路”
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；以当前 VPS + Docker + Hermes 宿主机模式为前提；不要求用户现在就确定最终模型提供商或消息渠道
+- 执行动作：在 `practice-plan.md` 的步骤 4 下新增“完成 OpenClaw 基础配置”补充小节；写入容器状态检查、Compose 启动/重启命令、进入容器方式、配置备份、最小 gateway 配置、健康检查、进入 configure 向导、当前阶段推荐设置和配置完成判断标准
+- 结果摘要：文档中现已包含一套更完整的 OpenClaw 配置阶段操作说明，可作为后续逐步完成 gateway 与基础配置的直接参考
+- 遇到的问题：OpenClaw 当前文档和 issue 反馈显示，configure 向导与 gateway 缺省配置之间有一定耦合，若直接依赖向导自动补全，容易在 “Missing config” 阶段反复
+- 风险与待确认项：后续若在 configure 里试过多个 provider / fallback，仍需手动检查配置文件是否残留旧值；同时应避免在基础 gateway 还没稳定前就同时接入 Telegram、Hermes、模型和插件
+- 下一步建议：按文档先补 gateway.mode / gateway.bind 最小配置并做健康检查；通过后再进入 `openclaw configure`，逐项完成最小配置
+
+## 任务日志 - 2026-05-06 23:57:06
+
+- 任务标题：分析 OpenClaw 容器访问宿主机 Hermes API 的 compose 冲突问题
+- 任务目标：根据用户在步骤 5 中遇到的 `conflicting options: custom host-to-IP mapping and the network mode` 报错与 `host.docker.internal:8642` 无法连通的现象，判断根因并给出可执行的修复与验证方案
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；以用户提供的云服务器实际 `docker compose` 输出为准；本次以问题分析和修复指引为主，不假设用户当前已能修改宿主机 Hermes 监听配置
+- 执行动作：分析 `docker-compose.override.yml` 中的 `extra_hosts` 配置与 OpenClaw 原始 compose 中服务网络模式的兼容性；区分 compose 启动失败与容器内访问失败两个层级；整理宿主机 Hermes 监听地址、容器重建方式与 DeepSeek 模型联通性的最小验证命令
+- 结果摘要：当前报错的直接原因是某个 OpenClaw 服务本身启用了 `network_mode`，而 Docker 不允许同一个服务同时声明 `network_mode` 与自定义 `extra_hosts`；即使去掉该冲突，`curl host.docker.internal:8642` 仍需进一步确认 Hermes 是否监听在 `0.0.0.0` 而非仅 `127.0.0.1`，以及容器是否已执行重建生效
+- 遇到的问题：用户贴出的错误只显示 `openclaw-cli` 启动时报 `custom host-to-IP mapping and the network mode`；同时 gateway 容器里访问 `host.docker.internal:8642` 失败，说明除 compose 冲突外，还可能叠加 Hermes 监听范围或宿主机防火墙问题
+- 风险与待确认项：若后续为了连通宿主机而直接改成 `network_mode: host`，会改变容器网络隔离方式，需同步检查 OpenClaw 其它端口暴露与服务发现逻辑；另外 Hermes 若仅绑定回环地址，即使 `host.docker.internal` 解析成功也仍会连接失败
+- 下一步建议：优先检查 OpenClaw 原始 `docker-compose.yml` 中哪些服务声明了 `network_mode`；对这些服务不要再加 `extra_hosts`，改为只给桥接网络服务补 `extra_hosts`，或统一改用宿主机实际网卡 IP；随后在宿主机确认 Hermes 监听 `0.0.0.0:8642`，再用容器内 `curl` 与 OpenClaw 模型列表命令做双重验证
+
+## 任务日志 - 2026-05-07 02:29:10
+
+- 任务标题：确认 Hermes CLI 可用但宿主机 API 端口未监听的问题
+- 任务目标：根据用户反馈“`hermes-cli` 已能正常对话、`openclaw-gateway` 已重建、`ss -lntp | grep 8642` 无输出”，判断当前阻塞点是否仍在 Docker 网络层，还是已经收敛为 Hermes API 服务本身未启动
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；以用户提供的宿主机实际现象为准；不把 CLI 可用误判成 HTTP API 已就绪
+- 执行动作：将 `ss` 无监听结果与前面容器内 `curl host.docker.internal:8642` 失败现象结合分析；区分“模型后端可用”和“OpenAI 兼容 API 端口已启动”两件事；整理下一步最小验证路径
+- 结果摘要：当前最核心的问题已不是 Compose 冲突，而是宿主机并没有任何进程监听 `8642`；这说明 Hermes 很可能只启动了本地 CLI 对话能力，尚未启动 HTTP API server，或 API 实际监听在别的端口
+- 遇到的问题：用户已确认 DeepSeek 在 Hermes CLI 中可以正常使用，这容易让人误以为 OpenClaw 需要的 HTTP API 也已自动启动；但从 `ss -lntp` 结果看，两者当前并不等价
+- 风险与待确认项：若后续直接围绕 Docker 网络继续折腾，会偏离真实阻塞点；需要先确认 Hermes 的 API 启动方式、实际监听端口和绑定地址，再回到容器连通性验证
+- 下一步建议：先在宿主机确认 Hermes 的 API 启动命令、配置文件中的监听端口与地址，并用本机 `curl http://127.0.0.1:<端口>/v1/models` 验证；只有宿主机本机 API 打通后，再回到 `openclaw-gateway` 容器里测试 `host.docker.internal`
+
+## 任务日志 - 2026-05-07 02:32:32
+
+- 任务标题：解读 Hermes 进程列表并排除“已启动两个服务”的误判
+- 任务目标：根据用户提供的 `ps -ef | grep hermes` 输出，判断当前宿主机上 Hermes 的实际进程数量，并确认是否已有独立 API service 在运行
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；以用户粘贴的 `ps` 输出为准；避免把 `grep` 自身命令误判为目标服务
+- 执行动作：解析 `ps -ef` 每行含义；将真正的 `python3 ... /home/agent/.local/bin/hermes` 进程与 `grep --color=auto hermes` 区分；结合前面 `ss -lntp | grep 8642` 无输出，继续判断 HTTP API 尚未监听
+- 结果摘要：当前只看到一个真实的 Hermes 相关进程，另一个是你刚执行的 `grep` 命令本身；从现象上看，宿主机还没有独立的 Hermes API 监听服务跑起来
+- 遇到的问题：`ps -ef | grep xxx` 的结果会把 `grep xxx` 自己也显示出来，容易造成“有两个进程”的错觉
+- 风险与待确认项：虽然当前进程名是 `hermes`，但仅凭它还无法确定启动参数、运行模式和监听端口；仍需继续看帮助输出或进程完整命令行
+- 下一步建议：优先执行 `hermes --help`，必要时再执行 `hermes serve --help`、`hermes server --help` 或查看该进程的完整启动参数，以确认如何单独拉起 API 服务
+
+## 任务日志 - 2026-05-07 02:36:00
+
+- 任务标题：确认当前 Hermes 进程未携带显式子命令或服务参数
+- 任务目标：根据用户提供的 `ps -fp` 与 `/proc/<pid>/cmdline` 输出，进一步判断当前 Hermes 进程是否运行在 API 服务模式
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；以用户粘贴的真实进程命令行为准；不臆测未展示出来的子命令
+- 执行动作：对比 `ps -fp 616369` 与 `tr '\0' ' ' < /proc/616369/cmdline` 的结果，确认当前命令行仅为 `python3 ... /home/agent/.local/bin/hermes`，没有附带 `serve`、`server`、`api`、`--port`、`--host` 等参数
+- 结果摘要：当前这个 Hermes 进程基本可以判断为默认 CLI 运行态，而不是显式启动的 HTTP API 服务；这与前面 `8642` 无监听的现象一致
+- 遇到的问题：用户虽确认 `hermes --help` 存在子命令，但尚未贴出具体子命令列表，因此暂时还无法直接指出 API 服务的准确启动命令
+- 风险与待确认项：若 Hermes 把 API 能力藏在不直观的子命令名下，仅凭常见的 `serve/server/api` 猜测可能会漏掉正确入口
+- 下一步建议：直接贴出 `hermes --help` 的完整输出，优先根据官方子命令列表定位 API server 的真实入口
+
+## 任务日志 - 2026-05-07 02:40:00
+
+- 任务标题：根据 Hermes 帮助输出缩小 API 服务入口范围
+- 任务目标：依据用户贴出的 `hermes --help` 完整输出，判断哪些子命令可能与 OpenClaw 需要的服务端接入方式相关
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；仅基于用户提供的帮助输出做判断；不把 `gateway` 直接等同于 OpenAI 兼容 API
+- 执行动作：检查子命令列表；重点识别 `gateway`、`acp`、`dashboard`、`mcp` 的职责描述；排除不存在的 `serve/server/api` 入口
+- 结果摘要：从当前帮助输出可确认：Hermes 没有直接暴露名为 `serve`、`server`、`api` 的子命令；`gateway` 明确偏向 “Messaging gateway”，`acp` 明确是 ACP server，因此是否存在 OpenAI 兼容 HTTP API 仍需进一步看 `gateway --help` 与 `acp --help`
+- 遇到的问题：帮助文本里没有直接出现 `openai-compatible api` 或 `http server` 之类的明确描述，导致当前不能武断认定 `gateway` 就是给 OpenClaw 用的模型 API
+- 风险与待确认项：若误把消息网关当成模型 API 去接 OpenClaw，会继续在错误方向上耗时；同样，ACP server 也不一定是 OpenClaw 当前这一步需要的接口协议
+- 下一步建议：优先执行 `hermes gateway --help` 和 `hermes acp --help`，查看它们是否支持监听 host/port，以及是否提供 HTTP 或 OpenAI 兼容接口
+
+## 任务日志 - 2026-05-07 03:21:38
+
+- 任务标题：确认 Hermes systemd 服务已启动并定位 OpenClaw 容器侧验证失败原因
+- 任务目标：根据用户提供的 `gateway install/start/status`、`ss`、宿主机 `curl` 以及容器侧 `docker compose exec` 输出，确认 Hermes API 是否已打通，并判断最后一步失败是否仍是网络问题
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；以用户云服务器上的真实命令输出为准；不把 `docker compose` 上下文错误误判为容器访问宿主机失败
+- 执行动作：分析 systemd 安装结果；确认 `hermes-gateway.service` 正常运行、`0.0.0.0:8642` 已监听、宿主机 `curl /v1/models` 成功；识别 `docker compose exec ...` 返回 `no configuration file provided: not found` 的语义，判断为当前 shell 目录不含 compose 文件
+- 结果摘要：Hermes API 这一段已经成功；最后一步失败不是 `host.docker.internal` 不通，而是用户在 `root@...:~` 目录下执行了 `docker compose exec`，该目录没有 `docker-compose.yml`，因此 Docker Compose 根本还没进入 OpenClaw 项目上下文
+- 遇到的问题：systemd 日志中出现 `RestartMaxDelaySec`、`RestartSteps` unknown key 提示，说明当前宿主机 systemd 版本较旧；不过 Hermes 服务已成功启动，这两条暂时不影响当前目标
+- 风险与待确认项：若切回 OpenClaw 项目目录后仍访问失败，才需要继续排查 `host.docker.internal` 解析或容器网络；当前阶段不能把 compose 上下文错误和网络连通性问题混为一谈
+- 下一步建议：在 `/data/apps/openclaw` 目录下重新执行 `docker compose exec openclaw-gateway curl ...`，或显式使用 `docker compose -f /data/apps/openclaw/docker-compose.yml -f /data/apps/openclaw/docker-compose.override.yml exec ...` 做验证
+
+## 任务日志 - 2026-05-07 03:24:24
+
+- 任务标题：完成 OpenClaw 容器到宿主机 Hermes API 的最终联通验证
+- 任务目标：确认 OpenClaw 网关容器是否已经可以通过 `host.docker.internal` 访问宿主机上的 Hermes OpenAI 兼容 API，并验证模型列表与聊天补全接口
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；以用户在云服务器 `/data/apps/openclaw` 目录下执行的真实命令输出为准；本次只做验证结论，不额外变更 OpenClaw 配置
+- 执行动作：在 OpenClaw 项目目录内执行 `docker compose exec openclaw-gateway curl ... /v1/models`；随后执行 `docker compose exec openclaw-gateway curl ... /v1/chat/completions`，使用 `hermes-agent` 模型进行最小对话验证
+- 结果摘要：验证全部通过。`openclaw-gateway` 容器已能访问 `http://host.docker.internal:8642/v1/models` 并拿到模型列表；聊天接口成功返回 “OpenClaw 到 Hermes 已打通”，说明宿主机 Hermes API、容器访问链路以及鉴权头均已生效
+- 遇到的问题：无新增阻塞；当前剩余事项主要是将这条已验证可用的 Hermes API 信息正式填入 OpenClaw 后续配置流程
+- 风险与待确认项：当前模型列表对外暴露的是 `hermes-agent`，并非底层真实 provider/model 名称；后续在 OpenClaw 配置时应以 Hermes API 暴露出来的模型名与鉴权方式为准
+- 下一步建议：继续进入 OpenClaw 的 provider / model 配置步骤，把 Base URL 设为 `http://host.docker.internal:8642/v1`，模型填 `hermes-agent`，并使用当前 Bearer Key 进行接入测试
+
+## 任务日志 - 2026-05-07 03:35:00
+
+- 任务标题：同步实践文档并明确 OpenClaw 下一步采用 Hermes 自定义 provider
+- 任务目标：把截至“步骤 5 已打通”的真实实践记录补写进 `docs/ai/practice-plan.md`，并整理 OpenClaw 下一步的推荐配置方式
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；优先更新 `docs/ai/practice-plan.md`；下一步配置需遵循 `OpenClaw -> Hermes API -> DeepSeek` 架构，不在 OpenClaw 内重复直连 DeepSeek
+- 执行动作：更新文档信息时间；补充 Hermes Gateway systemd 常驻记录；重写步骤 5 的真实执行记录、踩坑点和最终验证命令；整理 OpenClaw 使用 `models.providers.hermes` 自定义 OpenAI-compatible provider 的配置思路
+- 结果摘要：实践文档已更新到 2026-05-07，且已明确当前推荐链路与具体操作细节；后续 OpenClaw 配置将以 Hermes 作为唯一上游模型服务入口
+- 遇到的问题：OpenClaw 的通用 `configure` 向导更偏向常见内置 provider，对自定义 OpenAI-compatible 代理的场景不如直接编辑配置文件稳定
+- 风险与待确认项：若后续仍想同时保留其它 provider，需要注意 `agents.defaults.models` allowlist 与 `models.mode` 的合并关系，避免手工配置时覆盖已有模型目录
+- 下一步建议：在 OpenClaw 配置文件中新增 `models.providers.hermes`，主模型设为 `hermes/hermes-agent`，并把 `HERMES_API_KEY` 注入到 `openclaw-gateway` 与 `openclaw-cli` 容器环境中
+
+## 任务日志 - 2026-05-07 03:43:35
+
+- 任务标题：定位 call-hermes.sh 在宿主机执行时的 host.docker.internal 解析失败
+- 任务目标：根据用户执行 `./scripts/call-hermes.sh` 返回 `curl: (6) Could not resolve host: host.docker.internal` 的现象，判断该脚本是否应在宿主机还是容器环境中运行
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；以用户当前在宿主机 `/data/apps/openclaw/data/workspace` 目录下执行脚本的真实报错为准
+- 执行动作：结合前面 `docker-compose.override.yml` 中只给 `openclaw-gateway` 容器注入 `host.docker.internal` 映射的事实，分析该域名在宿主机 shell 中不可解析的原因；整理宿主机执行与容器内执行两种脚本写法
+- 结果摘要：当前报错不是 Hermes API 挂了，也不是密码写法问题，而是 `host.docker.internal` 这个名字只在容器里可用；宿主机直接执行脚本时应改用 `127.0.0.1:8642` 或宿主机实际 IP
+- 遇到的问题：步骤 6 的脚本路径放在 OpenClaw workspace 下，容易让人误以为它必须也适用于宿主机直接执行；但当前脚本内容实际上是面向容器内部环境写的
+- 风险与待确认项：若后续既想在宿主机调试，又想在 OpenClaw 容器内部复用同一脚本，最好给脚本增加可配置的 `HERMES_BASE_URL`，不要把地址硬编码死
+- 下一步建议：短期内二选一即可：要么在 OpenClaw 容器内执行现有脚本；要么把脚本中的 URL 改成可配置变量，宿主机默认走 `http://127.0.0.1:8642/v1`
+
+## 任务日志 - 2026-05-07 04:01:50
+
+- 任务标题：确认 OpenClaw workspace 实际挂载路径并定位脚本创建目录错误
+- 任务目标：根据用户提供的 `.env`、`docker compose config` 和 `docker inspect` 输出，确认 `call-hermes.sh` 为什么在容器内不可见
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；以用户服务器上的真实挂载配置为准；不误判为需要重建容器
+- 执行动作：检查 `OPENCLAW_WORKSPACE_DIR`、`OPENCLAW_CONFIG_DIR` 的真实值；核对 `openclaw-gateway` 的 bind mount 源与目标；将用户创建脚本的路径与容器实际挂载源进行对比
+- 结果摘要：容器实际挂载的 workspace 源目录是 `/home/agent/.openclaw/workspace`，而不是 `/data/apps/openclaw/data/workspace`；因此脚本虽然已在 `/data/apps/openclaw/data/workspace/scripts` 创建，但不会出现在容器内
+- 遇到的问题：实践文档早期示例使用了 `/data/apps/openclaw/data/workspace`，而当前这套 OpenClaw 安装实际生效的是 `.env` 中的 `/home/agent/.openclaw/workspace`
+- 风险与待确认项：若继续把脚本、测试文件或自动化目录写到旧示例路径，会持续出现“宿主机存在、容器内不可见”的错觉
+- 下一步建议：把脚本移动或复制到 `/home/agent/.openclaw/workspace/scripts/`，无需重建容器；必要时后续再把实践文档中的旧示例路径修正为当前真实挂载路径
