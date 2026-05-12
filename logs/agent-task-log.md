@@ -381,3 +381,171 @@
 - 遇到的问题：实践文档早期示例使用了 `/data/apps/openclaw/data/workspace`，而当前这套 OpenClaw 安装实际生效的是 `.env` 中的 `/home/agent/.openclaw/workspace`
 - 风险与待确认项：若继续把脚本、测试文件或自动化目录写到旧示例路径，会持续出现“宿主机存在、容器内不可见”的错觉
 - 下一步建议：把脚本移动或复制到 `/home/agent/.openclaw/workspace/scripts/`，无需重建容器；必要时后续再把实践文档中的旧示例路径修正为当前真实挂载路径
+
+## 任务日志 - 2026-05-07 04:16:51
+
+- 任务标题：更新步骤 7 命令写法并补充宿主机与容器执行方式说明
+- 任务目标：根据用户反馈“进入容器和执行容器内命令有些迷糊”，把 `practice-plan.md` 中步骤 7 的命令改写为更易理解的版本
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；命令示例需与当前真实工作区路径和容器路径保持一致
+- 执行动作：将步骤 7 改为两套并列用法：`docker compose exec ... sh -lc` 的单命令方式，以及 `docker compose exec ... sh` 进入交互式 shell 的方式；补充 `exit` 何时需要、宿主机路径与容器路径如何对应的解释
+- 结果摘要：实践文档现在已经明确区分“宿主机直接下发容器内命令”和“先进入容器再执行”两种操作方式，后续按文档执行时更不容易混淆上下文
+- 遇到的问题：无新增阻塞；本次主要是降低操作理解成本
+- 风险与待确认项：若后续 OpenClaw 容器名或工作区映射方式变化，步骤 7 的命令仍需随部署实际调整
+- 下一步建议：按新的步骤 7 先做一次完整链路验证，再根据 Hermes 返回结果判断是否需要把 call-hermes.sh 从单次 HTTP 请求升级为更稳定的自动化脚本
+
+## 任务日志 - 2026-05-07 04:27:21
+
+- 任务标题：定位步骤 7 中 Hermes 无法改文件的真实根因
+- 任务目标：根据用户贴出的 Hermes 返回内容，判断为什么 HTTP 请求成功但 Hermes 的 terminal、read_file、write_file 等工具全部失败
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；以用户返回的 Hermes 报错和前面 gateway 启动日志中的 `MESSAGING_CWD` 警告为准；不误判为 OpenClaw 或 Docker 网络问题
+- 执行动作：将 Hermes 返回的 “后端工作目录 /home/node/.openclaw/workspace 不存在” 与此前的 `MESSAGING_CWD=/home/node/.openclaw/workspace found in .env — this is deprecated` 警告关联分析；结合官方配置文档确认 gateway 会以消息工作目录作为会话起点
+- 结果摘要：当前问题是 Hermes Gateway 仍在使用旧的、面向 OpenClaw 容器的工作目录 `/home/node/.openclaw/workspace`；但 Hermes 实际跑在宿主机上，这个目录在宿主机不存在，因此所有本地工具调用都会失败
+- 遇到的问题：OpenClaw 到 Hermes API 的调用本身已成功，容易让人误以为“链路已通就应该能改文件”；但 Hermes 会话的 cwd 配错后，工具层仍会全部失效
+- 风险与待确认项：如果简单按 Hermes 返回内容在宿主机创建 `/home/node/.openclaw/workspace`，虽然可能消除“不存在”报错，但仍会把 Hermes 引到错误目录，偏离本项目希望它直接操作 `/data/repos/notes` 的目标
+- 下一步建议：把 Hermes 配置中的旧 `MESSAGING_CWD` 移除，并在 `config.yaml` 中把 `terminal.cwd` 显式改为 `/data/repos/notes`；重启 `hermes-gateway.service` 后再重试步骤 7
+
+## 任务日志 - 2026-05-08 03:16:30
+
+- 任务标题：审查 Hermes 的 config.yaml 与 .env 配置项风险
+- 任务目标：基于用户贴出的 `/data/apps/hermes/home/config.yaml` 和 `.env` 内容，识别不仅影响上一个问题、也包括其他潜在隐患的配置项
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；以用户当前实际配置为准；需要区分必须调整、建议调整和可暂时保留的项
+- 执行动作：对照 Hermes 官方配置文档检查 `terminal.cwd`、`MESSAGING_CWD`、`API_SERVER_*`、`network.force_ipv4`、调试项和超时项等配置；结合前一轮步骤 7 的报错做风险归类
+- 结果摘要：当前最关键且必须改的仍是“移除已废弃的 `MESSAGING_CWD` 并在 `config.yaml` 中显式设置正确的 `terminal.cwd`”；此外还发现 API Server 暴露策略、API 密钥强度、基础镜像固定方式和若干默认超时设置有中低风险隐患
+- 遇到的问题：用户当前贴出的 `config.yaml` 中没有 `terminal:` 段，说明 Hermes 仍依赖 `.env` 里已废弃的旧工作目录配置，这正是上一步工具全部失败的直接原因
+- 风险与待确认项：若后续继续以 `0.0.0.0` 暴露 API Server，需要确认云服务器安全组与本机防火墙策略；否则 Hermes 的 Bearer Key 将成为唯一防线
+- 下一步建议：先输出分级审查结论并由用户确认；随后按“先修功能阻塞、再收口安全与维护性”的顺序修改配置并重启服务验证
+
+## 任务日志 - 2026-05-08 03:25:00
+
+- 任务标题：更新实践文档进度并调整步骤标题层级以适配侧边栏导航
+- 任务目标：根据用户确认“第 7 步已完成、notes 文件已被修改”，同步更新 `practice-plan.md` 的执行进度；同时把各步骤标题从四级提升到三级，便于 VuePress 左侧边栏快速导航
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；仅调整文档结构与进度说明，不改动实践方案核心内容
+- 执行动作：将 `步骤 1` 至 `步骤 9` 相关标题从 `####` 提升为 `###`；把步骤 7 的执行时间、实际结果、处理结果和当前状态改为“修复 Hermes Gateway 工作目录后已完成关键闭环验证”
+- 结果摘要：实践计划现在可以在左侧边栏按步骤快速导航；第 7 步当前已明确标记为“已完成，完整链路已验证到 OpenClaw 调 Hermes 并修改宿主机仓库”
+- 遇到的问题：文档中各步骤标题文案并不完全统一，因此本次结构调整需按实际标题逐个匹配修改，不能依赖一刀切替换
+- 风险与待确认项：步骤 7 目前已验证到文件修改闭环，但若后续还需要把 `pnpm build` 也作为强制验收项，仍建议在下一轮补充一次更完整的构建验证记录
+- 下一步建议：继续推进步骤 8 之前，可先根据需要决定是否补一轮“Hermes 自动修改 + 自动构建”的完整回归测试
+
+## 任务日志 - 2026-05-08 03:44:00
+
+- 任务标题：在实践计划前置位置补充 Linux、Docker、OpenClaw、Hermes 常用操作速查
+- 任务目标：根据用户反馈“对 Linux、Docker、容器内操作还不熟悉”，在 `practice-plan.md` 的步骤 1 前新增一节高频命令和操作说明，便于日常排查和重复使用
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；以用户当前真实服务器环境、目录结构和 OpenClaw/Hermes 部署方式为准；不扩写成泛化教程
+- 执行动作：在“架构约定”后新增“常用命令与操作速查”三级标题；分块整理宿主机与容器关系、常见目录、Docker 服务启停、OpenClaw 容器进出方式、Hermes Gateway 状态查看与启停、notes 仓库常用命令以及当前最常见误区
+- 结果摘要：实践文档现在在步骤 1 前已新增一段面向当前项目环境的操作速查，后续遇到“我现在在哪一层”“该在哪个目录执行”“该看哪个日志”的问题时，可以先查这节再继续
+- 遇到的问题：无新增阻塞；本次主要是把多轮对话中已经验证过的高频命令沉淀成固定参考
+- 风险与待确认项：随着后续 Telegram、自动化脚本和运维策略继续增加，这一节仍需持续维护，否则容易和真实环境脱节
+- 下一步建议：后续每当新增一类高频操作，比如 Telegram webhook、Hermes 配置回滚、OpenClaw 模型切换，都优先补充到这节速查中
+
+## 任务日志 - 2026-05-08 03:53:51
+
+- 任务标题：评估步骤 8 改为微信接入的技术限制与备案要求
+- 任务目标：根据用户希望把第 8 步从 Telegram 调整为“我 -> 微信 -> OpenClaw -> Hermes”，判断 OpenClaw 是否存在可行微信入口，并分析不同微信接法对公网、HTTPS、域名和备案的要求
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；以当前 `practice-plan.md` 的 OpenClaw + Hermes 架构为前提；重点区分“OpenClaw 官方微信渠道/插件模式”和“公众号、小程序、企业微信官方回调模式”
+- 执行动作：读取 `docs/ai/practice-plan.md` 当前步骤 8 上下文；核对 OpenClaw 官方文档中微信渠道页是否存在；交叉查看微信小程序网络域名文档与企业微信开发者文档的公开要求；整理为面向当前架构的限制判断
+- 结果摘要：OpenClaw 现阶段并非只能接 Telegram，官方文档中已存在微信渠道页，因此“技术上完全不能接微信”这一点基本可以排除；但如果走的是 OpenClaw 的微信插件/扫码登录模式，限制重点更偏向插件稳定性、登录态维护和合规风险，通常不以“域名备案”为首要门槛；如果改走公众号、小程序或企业微信的官方回调模式，则通常需要公网可访问地址、HTTPS、白名单配置，且小程序场景对已配置域名与证书要求明确，备案问题也更容易进入前置条件
+- 遇到的问题：微信官方文档站点对自动化抓取不够稳定，部分页面更适合作为人工核对来源；因此本轮结论以“是否存在公开能力入口”和“典型接入约束”做分层判断，而不是把每个产品线细则都下绝对结论
+- 风险与待确认项：当前仍未确认你想接的是“个人微信”“企业微信”“公众号”还是“小程序客服/消息入口”；这会直接决定是否需要备案域名、是否必须公网回调、以及后续链路是否容易长期维护
+- 下一步建议：若目标是先快速打通个人自用链路，优先考虑 OpenClaw 官方微信插件能力并把它视为实验性入口；若目标是长期稳定、合规、可持续运维，优先考虑企业微信或公众号官方方案，再基于对应要求补域名、HTTPS 和可能的备案准备
+
+## 任务日志 - 2026-05-10 08:01:53
+
+- 任务标题：评估当前架构中 OpenClaw 是否仍为必需层
+- 任务目标：判断在现有 `OpenClaw -> Hermes -> notes 仓库` 方案里，OpenClaw 是否只是消息入口与控制层，以及在 Hermes 自身已具备消息网关和 API 能力的前提下，是否可以删掉 OpenClaw 直接与 Hermes 对话和执行任务
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；以当前个人笔记项目与国内网络条件为背景；需要区分“功能上可替代”和“现阶段是否值得删层”
+- 执行动作：核对 Hermes 官方 `Messaging Gateway`、`API Server` 能力说明；交叉确认 OpenClaw 官方关于 `channels`、`channel routing`、`Control UI / WebChat` 的定位；整理两者的职责边界和适合当前场景的收敛建议
+- 结果摘要：从能力边界看，Hermes 已不只是底层执行器，它本身就具备消息入口、会话和对话能力，因此“OpenClaw 不是绝对必需”这一判断成立；OpenClaw 的主要增益更偏向多渠道聚合、Control UI、统一路由、插件生态和面向 agent 平台的控制层。如果当前目标只是“我自己和 agent 对话，并让它整理文档、搜集资料、完成笔记任务”，完全存在收敛成“直接使用 Hermes”的可行路径
+- 遇到的问题：当前实践文档和已完成部署步骤是围绕 `OpenClaw + Hermes` 架构展开的，若后续真要删掉 OpenClaw，文档结构和步骤顺序需要整体重写，不能只删一两段说明
+- 风险与待确认项：虽然从功能上可以删掉 OpenClaw，但若你后续仍想要更成熟的多渠道入口、浏览器控制台、设备配对、跨渠道路由或更强的 agent 编排体验，删层后又可能重新补回来；另外 Hermes 的消息入口是否完全覆盖你未来想要的国内 IM 渠道，还需要结合最终渠道再判断
+- 下一步建议：先不要急着卸载 OpenClaw，优先做“目标收敛”判断；如果近期目标已经明确收缩为“个人自用、单入口、可直接对话 Hermes”，下一轮可以专门重新设计一版“纯 Hermes 架构”并评估迁移成本，再决定是否删除 OpenClaw
+
+## 任务日志 - 2026-05-13 18:35:00
+
+- 任务标题：将实践文档重构为纯 Hermes 架构并冻结 OpenClaw 当前状态
+- 任务目标：根据用户已确认“当前仅使用 Hermes，OpenClaw 完全多余”的新决策，先保留 OpenClaw 但不移除；把服务器上 OpenClaw/Docker/Hermes 的真实状态写入文档；将 `practice-plan.md` 从 `OpenClaw + Hermes` 方案整体重构为“纯 Hermes + Dashboard/TUI + Feishu”方案
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；本轮优先更新文档，不直接代替用户执行服务器停服；OpenClaw 只做冻结留档，不再作为主入口继续扩写
+- 执行动作：读取用户贴出的服务器检查输出；确认 Docker 当前运行、OpenClaw gateway 当前健康但 Telegram 持续访问超时、OpenClaw CLI 不常驻且曾出现 gateway 不可达、宿主机 OpenClaw 配置目录与 workspace 仍存在、Hermes Gateway systemd 正常运行且 API 监听 `0.0.0.0:8642`、`terminal.cwd` 已指向 `/data/repos/notes`；随后重写 `docs/ai/practice-plan.md`，将主体切换为“纯 Hermes”步骤，并补写 Dashboard/TUI 远程访问与 Feishu 接入步骤
+- 结果摘要：`practice-plan.md` 已彻底从旧的 `OpenClaw -> Hermes` 主方案切换为“纯 Hermes + Dashboard/TUI + Feishu”的新主方案；文档中已保留 OpenClaw 当前部署与失败症状冻结记录；后续可以直接按新步骤停掉 OpenClaw、停 Docker、配置 Hermes Dashboard 和 Feishu
+- 遇到的问题：用户贴出的只读检查里有一条 `s -al /home/agent/.openclaw/workspace` 的手误命令失败，但不影响整体状态判断；另外由于本轮是基于用户贴出的输出更新文档，我没有直接在服务器上执行停服命令
+- 风险与待确认项：当前 `Hermes API Server` 仍监听 `0.0.0.0:8642`，若后续不再需要外部 API 访问，建议在纯 Hermes 稳定后收口；`Hermes Dashboard` 本身不适合直接裸露公网；Feishu 正式接入前仍需根据官方当下版本核对具体环境变量/配置字段名
+- 下一步建议：先按文档执行“停掉 OpenClaw 和 Docker 服务”；随后优先跑通 `Hermes Dashboard --tui`；最后接入 Feishu 并补 allowlist 与主动通知配置
+
+## 任务日志 - 2026-05-13 18:52:00
+
+- 任务标题：同步记录 OpenClaw 与 Docker 已停用的真实执行结果
+- 任务目标：根据用户在服务器上已实际执行的停服命令，把 `practice-plan.md` 中步骤 3 更新为真实状态，并明确本轮不仅停掉了 `docker.service`，还停掉并禁用了 `docker.socket`
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；不在本地假设服务器状态，严格以用户贴出的输出为准
+- 执行动作：更新 `docs/ai/practice-plan.md` 第 3 步命令与执行记录；补充 `docker.socket` 的说明；将状态从“待执行”改为“已完成”
+- 结果摘要：当前文档已明确：OpenClaw 容器已停止，Docker 服务已停止，Docker socket 已停止并禁用，OpenClaw 暴露端口已消失；后续文档可以直接从“步骤 4：启动 Hermes Dashboard/TUI”继续推进
+- 遇到的问题：`systemctl stop docker` 的提示容易让人误以为停服失败；实际它只是提醒 `docker.socket` 仍可能自动拉起 Docker，本轮已通过显式停用和禁用 socket 解决
+- 风险与待确认项：如果后续又手工执行 `docker` 相关命令，且再次启用了 socket 或 service，Docker 仍可能恢复；但当前纯 Hermes 路线下，这不影响下一步
+- 下一步建议：继续执行文档中的步骤 4，在 `agent` 用户下补齐 `Hermes Dashboard/TUI` 依赖并完成本机启动验证
+
+## 任务日志 - 2026-05-13 19:30:00
+
+- 任务标题：同步记录 Hermes Dashboard/TUI 已跑通并可通过本地隧道访问
+- 任务目标：根据用户已实际完成的第 4 步结果，把 `practice-plan.md` 中 Hermes Dashboard/TUI 的状态从“待执行”改为“已完成”，并把当前已验证的远程访问方式记录为 SSH 隧道
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；不把当前临时 SSH 隧道误写成长期公网方案；本轮只同步真实进度，不扩写还没做的 systemd 或 Feishu 配置
+- 执行动作：更新 `docs/ai/practice-plan.md` 第 4 步执行记录；在第 5 步中补写当前已验证的 `ssh -L 9119:127.0.0.1:9119` 访问方式；将第 4 步状态改为已完成，并把第 5 步状态更新为“进行中”
+- 结果摘要：文档现在已经明确：Hermes Dashboard/TUI 已成功启动，Gateway 没有被带挂，本地 Mac 已可通过 SSH 隧道访问服务器上的 Dashboard/TUI；后续只需继续决定是否还要配置更长期的远程访问方案
+- 遇到的问题：当前 Hermes 的虚拟环境由 `uv` 管理，`venv/bin/` 下没有独立 `pip` 命令和 `pip` 模块，因此文档里不能继续使用泛化的 `pip install` 写法来描述当前环境
+- 风险与待确认项：当前可访问方式仍属于临时隧道，不适合作为长期移动访问方案；若后续希望在手机或其他公网电脑长期直接访问，仍需补做 Tailscale、反向代理或其他认证层
+- 下一步建议：继续推进第 5 步到第 7 步，优先决定 Dashboard 的长期访问方式，再开始接入 Feishu
+
+## 任务日志 - 2026-05-13 19:48:00
+
+- 任务标题：将 Hermes Dashboard 的长期远程访问方案收敛为 Tailscale
+- 任务目标：根据用户已明确选定 `Tailscale`，更新 `practice-plan.md` 第 5 步，使其不再维持“SSH 隧道 / Tailscale / Nginx”三选一的摇摆状态，而是改成“SSH 隧道作为已验证临时入口，Tailscale 作为正式长期入口”
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；保留 SSH 隧道作为已验证事实；不把未执行的公网反向代理方案继续写成当前推荐方案
+- 执行动作：重写 `docs/ai/practice-plan.md` 第 5 步说明、链路图、实施步骤与状态；把 `Tailscale` 安装、`tailscaled` 启动、`tailscale up`、`tailscale serve https / http://127.0.0.1:9119` 等关键命令写入文档；将 Nginx 方案降为“不建议当前阶段采用的方式”
+- 结果摘要：实践文档现在已经明确：Hermes Dashboard/TUI 的长期远程访问方案选定为 `Tailscale 私网`；SSH 隧道保留为已验证的临时访问方式；当前阶段不再建议把 Dashboard 暴露成普通公网网站
+- 遇到的问题：无新增技术阻塞；本轮主要是把策略决策固定到文档中，避免后续继续在多个长期访问方案之间反复切换
+- 风险与待确认项：Tailscale 对“陌生设备临时访问”的便利性不如公网方案；如果用户后续确实频繁需要在陌生设备上使用 Hermes Dashboard，仍可能重新评估公网入口
+- 下一步建议：按文档执行 Tailscale 安装与 `tailscale serve` 配置；验证手机和常用设备通过同一 tailnet 访问 Dashboard/TUI；之后再继续接入 Feishu
+
+## 任务日志 - 2026-05-13 21:45:00
+
+- 任务标题：同步记录 Tailscale Serve 已打通并补充设备过期策略建议
+- 任务目标：根据用户已实际完成的 Tailscale 接入结果，更新 `practice-plan.md` 第 5 步的真实执行记录；同时把“固定设备永不过期、陌生设备短期过期”的可执行建议写入文档
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；以当前新版 `tailscale serve` CLI 行为为准；不把旧版 `tailscale serve https / ...` 命令继续写进文档
+- 执行动作：将第 5 步的 Serve 命令改为 `tailscale serve --bg http://127.0.0.1:9119`；补写 `tailscale serve status` 的真实输出；记录通过 `ts.net` 域名访问时遇到的 `Invalid Host header` 问题及其已解决事实；增加设备 key expiry 的推荐配置思路
+- 结果摘要：文档中现已明确：Tailscale 长期访问方案已跑通；当前访问地址是 tailnet 内 `https://ldclouda31488.tail48d087.ts.net`；设备过期策略建议为“tailnet 默认 1 day + 固定可信设备逐台 Disable Key Expiry”
+- 遇到的问题：Tailscale 新版 CLI 与旧版 `serve` 命令写法不兼容，且首次访问 Hermes Dashboard 时出现了 Host header 校验问题
+- 风险与待确认项：陌生设备 24 小时过期这类策略本质上是 tailnet 级默认值加上单设备例外配置，不是单台设备可自由设任意不同到期时间；若后续 Tailscale 后台界面文案或策略入口调整，仍需以当时控制台为准
+- 下一步建议：继续推进第 6 步与第 7 步，优先把 Dashboard 做成长期服务，再开始接入 Feishu
+
+## 任务日志 - 2026-05-13 22:05:00
+
+- 任务标题：同步收敛 Hermes Dashboard systemd 服务参数为已验证可用版本
+- 任务目标：在用户执行第 6 步前，先把 `practice-plan.md` 中 `hermes-dashboard.service` 的示例参数更新为当前已实际验证可配合 Tailscale 使用的版本，避免用户再按旧的 `127.0.0.1` 示例重复踩 `Invalid Host header` 的坑
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；不把“理论上更安全但当前已验证失败”的参数继续写进文档；需保留为什么使用 `0.0.0.0 + --insecure` 的解释
+- 执行动作：更新 `docs/ai/practice-plan.md` 第 6 步说明；把 systemd 服务示例改为 `--tui --host 0.0.0.0 --port 9119 --insecure --no-open`；将 `tailscaled.service` 加入依赖；补写本机与 Tailscale 的补充验证命令
+- 结果摘要：第 6 步现在已经与当前真实环境对齐，用户可以直接照文档执行，不需要再一边执行一边手动改参数
+- 遇到的问题：原文里的 systemd 示例使用的是更偏“本机直开”的 `127.0.0.1` 版本，不适合当前通过 `Tailscale Serve` 的 `ts.net` 域名访问场景
+- 风险与待确认项：虽然当前 systemd 将 Dashboard 绑定到 `0.0.0.0`，但前提是 `9119` 不直接暴露公网；若后续云平台安全组错误放开 `9119`，风险会明显上升
+- 下一步建议：按更新后的第 6 步执行 systemd 服务创建与验证；确认长期稳定后再继续第 7 步 Feishu 接入
+
+## 任务日志 - 2026-05-13 22:10:00
+
+- 任务标题：同步记录 Hermes Dashboard 已完成 systemd 常驻化
+- 任务目标：根据用户贴出的第 6 步执行日志，把 `practice-plan.md` 中 Hermes Dashboard systemd 服务的状态从“待执行”改为“已完成”，并记录当前常驻参数、监听状态和 Tailscale Serve 代理结果
+- 工作目录：`/Users/jianjiuping/projects/jeffrey/notes`
+- 前置约束：全程使用中文；以用户服务器上的真实执行输出为准；要明确区分“405 HEAD 不允许”和“服务异常”不是同一回事
+- 执行动作：更新 `docs/ai/practice-plan.md` 第 6 步执行记录；补写 `systemctl enable --now`、`ss -lntp`、`tailscale serve status` 和 `curl -I` 的真实结果；将状态切换为已完成
+- 结果摘要：Hermes Dashboard 现已通过 `hermes-dashboard.service` 常驻运行；服务监听 `0.0.0.0:9119`，并继续由 `Tailscale Serve` 转发到 `https://ldclouda31488.tail48d087.ts.net`；后续不再需要手工启动 Dashboard
+- 遇到的问题：`curl -I http://127.0.0.1:9119` 返回 `405 Method Not Allowed`，但这只是因为 Dashboard 入口不接受 `HEAD` 请求，不代表服务不可用
+- 风险与待确认项：当前 Dashboard 已常驻，但 `9119` 仍监听在所有网卡上；必须继续确保云平台安全组和本机防火墙不直接向公网暴露该端口
+- 下一步建议：进入第 7 步，开始接入 Feishu，并补齐 allowlist 与主动通知配置
