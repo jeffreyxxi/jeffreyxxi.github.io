@@ -669,3 +669,5 @@ No user allowlists configured. All unauthorized users will be denied.
 - [Hermes Feishu 文档](https://hermes-agent.nousresearch.com/docs/user-guide/messaging/feishu)
 - [Hermes Web Dashboard 文档](https://hermes-agent.nousresearch.com/docs/user-guide/features/web-dashboard)
 - [Hermes API Server 文档](https://hermes-agent.nousresearch.com/docs/user-guide/features/api-server)
+
+从飞书发起更新成功
