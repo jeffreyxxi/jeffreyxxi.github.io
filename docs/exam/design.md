@@ -41,6 +41,7 @@ docs/exam/
 ├── progress.md          ← 进度仪表盘（每次练习后 Hermes 更新）
 ├── memory.md            ← 备考记忆：学习画像 + 薄弱诊断 + 策略调整
 ├── tips.md              ← 备考技巧与心得
+├── exam-info.md         ← 🆕 考试信息收集（多场考试追踪）
 ├── images/              ← 题目图片集中存放
 │   ├── logic-*.png      ← 判断推理图形题
 │   ├── data-*.png       ← 资料分析图表题
