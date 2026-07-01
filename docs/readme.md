@@ -23,6 +23,10 @@ footer: written by jeffrey
 
 [AI 学习与实践](/ai/) / [AI Agent 工具链](/ai/agent-tools) / [AI 模型搭配与选型](/ai/model-selection) / [AI 自动化实践计划](/ai/practice-plan)
 
+### 事业单位备考
+
+[备考项目设计](/exam/design) / [考试大纲](/exam/syllabus)
+
 ### 前端笔记
 
 [javascript 笔记](/fe_lang/javascript) / [开发随笔](/fe_lang/dev_note) / [面试总结](/fe_lang/tests) / [Vue 学习](/fe_lang/vue) / [CSS 笔记](/fe_lang/css) / [HTML 笔记](/fe_lang/html)
